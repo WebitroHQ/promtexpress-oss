@@ -1,0 +1,62 @@
+name: Release Python SDK
+
+# Push a tag like python-v0.2.0 to publish python/ to PyPI.
+# Uses PyPI trusted publishing: no API token is stored anywhere.
+on:
+  push:
+    tags: ["python-v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Check tag matches package version
+        run: |
+          tag="${GITHUB_REF_NAME#python-v}"
+          pyproject=$(python -c "import tomllib; print(tomllib.load(open('python/pyproject.toml', 'rb'))['project']['version'])")
+          module=$(sed -n 's/^__version__ = "\(.*\)"/\1/p' python/src/promtexpress/__init__.py)
+          echo "tag=$tag pyproject=$pyproject __version__=$module"
+          if [ "$tag" != "$pyproject" ] || [ "$tag" != "$module" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match python/pyproject.toml ($pyproject) and __version__ ($module)"
+            exit 1
+          fi
+
+      - name: Test
+        run: |
+          pip install ./python
+          python -m unittest discover -s python/tests -v
+
+      - name: Build sdist and wheel
+        run: |
+          pip install build
+          python -m build python --outdir dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-dist
+          path: dist/
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/promtexpress/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: python-dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
