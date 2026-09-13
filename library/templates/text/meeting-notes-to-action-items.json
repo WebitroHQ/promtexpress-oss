@@ -1,0 +1,22 @@
+{
+  "$schema": "../../schema/template.schema.json",
+  "id": "text/meeting-notes-to-action-items",
+  "title": "Meeting notes to action items",
+  "description": "Turns messy meeting notes or a transcript into decisions, owners, deadlines and open questions, without inventing anything.",
+  "category": "productivity",
+  "modality": "text",
+  "engine": null,
+  "language": "en",
+  "version": "1.0.0",
+  "authors": ["SpicesFire"],
+  "tags": ["meetings", "summarization", "project-management"],
+  "variables": [
+    { "name": "notes", "description": "Raw notes or transcript", "required": true, "example": "Ali: landing page slips to Friday, waiting on copy. Zeynep owns copy. Pricing still undecided..." },
+    { "name": "team_context", "description": "Who was in the meeting and what the project is", "required": false, "example": "Weekly sync for the Q4 website relaunch; marketing + two engineers" }
+  ],
+  "template": "You are an experienced chief of staff who turns meeting notes into a record people can act on.\n\nContext: {{team_context}}\n\nNotes:\n\"\"\"\n{{notes}}\n\"\"\"\n\nProduce exactly these sections in Markdown:\n\n## Decisions\nBullet list of what was actually decided. If nothing was decided, write \"None recorded\".\n\n## Action items\nA table with columns: Action | Owner | Deadline | Source quote.\n- Start every action with a verb.\n- Owner and deadline must come from the notes. If missing, write \"Unassigned\" or \"No date\"; never guess.\n- \"Source quote\" is the shortest phrase from the notes that supports the item.\n\n## Open questions\nThings raised but not resolved, each with who is best placed to answer if the notes say so.\n\n## Risks\nOnly risks explicitly mentioned or directly implied by a slipped deadline or blocker.\n\nRules: do not add information that is not in the notes, keep the original language of names and product terms, and stay under 300 words outside the table.",
+  "example": {
+    "notes": "Ali: landing page slips to Friday, waiting on copy. Zeynep owns copy, says Wednesday. Pricing still undecided, Kerem to bring two options next week. Analytics broken on checkout since Monday.",
+    "team_context": "Weekly sync for the Q4 website relaunch"
+  }
+}

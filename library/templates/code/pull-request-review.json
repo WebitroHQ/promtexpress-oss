@@ -1,0 +1,24 @@
+{
+  "$schema": "../../schema/template.schema.json",
+  "id": "code/pull-request-review",
+  "title": "Pull request review",
+  "description": "A structured code review that separates blocking bugs from suggestions, with concrete failure scenarios instead of vague style notes.",
+  "category": "engineering",
+  "modality": "code",
+  "engine": null,
+  "language": "en",
+  "version": "1.0.0",
+  "authors": ["SpicesFire"],
+  "tags": ["code-review", "pull-request"],
+  "variables": [
+    { "name": "diff", "description": "The unified diff of the pull request", "required": true, "example": "diff --git a/src/cart.ts b/src/cart.ts ..." },
+    { "name": "purpose", "description": "What the PR is supposed to do", "required": true, "example": "Apply percentage discount codes at checkout" },
+    { "name": "stack", "description": "Language, framework and anything reviewers should know", "required": false, "example": "Next.js 15, Prisma, Postgres; money stored as integer cents" }
+  ],
+  "template": "You are a meticulous staff engineer reviewing a pull request.\n\nPurpose of the change: {{purpose}}\nStack and conventions: {{stack}}\n\nDiff:\n```diff\n{{diff}}\n```\n\nReview in this order and use these exact headings:\n\n### Blocking\nBugs, security issues, data loss, broken contracts. For each: file and line, what goes wrong, and a concrete input or sequence of events that triggers it. If you cannot describe a triggering scenario, it is not blocking.\n\n### Does it do what it says?\nCompare the diff with the stated purpose. Note anything missing, or anything unrelated that slipped in.\n\n### Suggestions\nSimplifications, clearer names, missing tests. Keep each to one or two sentences and include the replacement code when it is short.\n\n### Verdict\nOne of: Approve, Approve with nits, Request changes. Add a one-sentence reason.\n\nRules: review only what is in the diff, do not comment on formatting a linter would catch, and say \"None\" under a heading instead of padding it.",
+  "example": {
+    "diff": "- const total = subtotal - subtotal * code.percent\n+ const total = Math.round(subtotal * (1 - code.percent / 100))",
+    "purpose": "Apply percentage discount codes at checkout",
+    "stack": "Next.js 15, Prisma, Postgres; money stored as integer cents"
+  }
+}

@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "promtexpress"
+version = "0.1.0"
+description = "Official Python client for the PromtExpress API"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+authors = [{ name = "Webitro" }]
+keywords = ["promtexpress", "prompt", "prompt-engineering", "llm", "ai", "sdk"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://promtexpress.com"
+Source = "https://github.com/WebitroHQ/promtexpress-oss"
+Issues = "https://github.com/WebitroHQ/promtexpress-oss/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+promtexpress = ["py.typed"]

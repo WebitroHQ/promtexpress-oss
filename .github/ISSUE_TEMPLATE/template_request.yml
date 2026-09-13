@@ -1,0 +1,28 @@
+name: Template request or proposal
+description: Suggest a prompt template for the library, or claim one you want to write
+labels: [template request]
+body:
+  - type: dropdown
+    id: modality
+    attributes:
+      label: Modality
+      options: [text, code, image, video, audio, music]
+    validations:
+      required: true
+  - type: input
+    id: job
+    attributes:
+      label: What job should the template do?
+      placeholder: "Flat-lay product photo for Instagram"
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Who would use it and what does a great result look like?
+  - type: checkboxes
+    id: claim
+    attributes:
+      label: Contribution
+      options:
+        - label: I would like to write this template myself

@@ -1,0 +1,41 @@
+{
+  "name": "promtexpress",
+  "version": "0.1.0",
+  "description": "Official JavaScript/TypeScript client for the PromtExpress API",
+  "license": "MIT",
+  "author": "Webitro",
+  "homepage": "https://promtexpress.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebitroHQ/promtexpress-oss.git",
+    "directory": "packages/sdk"
+  },
+  "keywords": [
+    "promtexpress",
+    "prompt",
+    "prompt-engineering",
+    "llm",
+    "ai",
+    "sdk"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test \"test/**/*.test.ts\""
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

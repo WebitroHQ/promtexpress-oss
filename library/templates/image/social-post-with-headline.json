@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schema/template.schema.json",
+  "id": "image/social-post-with-headline",
+  "title": "Social post with headline text",
+  "description": "Promotional social media graphic with exact headline and call-to-action text rendered legibly, for text-capable image models.",
+  "category": "marketing",
+  "modality": "image",
+  "engine": null,
+  "language": "en",
+  "version": "1.0.0",
+  "authors": ["SpicesFire"],
+  "tags": ["social-media", "typography", "advertising"],
+  "variables": [
+    { "name": "headline", "description": "Exact headline text, short", "required": true, "example": "Summer Sale" },
+    { "name": "cta", "description": "Exact call-to-action text", "required": true, "example": "Up to 40% off, this week only" },
+    { "name": "visual", "description": "Main visual subject", "required": true, "example": "a stack of colorful folded beach towels on white sand" },
+    { "name": "palette", "description": "Brand colors", "required": true, "example": "coral, sand beige and deep teal" },
+    { "name": "aspect_ratio", "description": "1:1 feed, 4:5 portrait or 9:16 story", "required": true, "example": "1:1" }
+  ],
+  "template": "Promotional social media graphic, aspect ratio {{aspect_ratio}}.\n\nMAIN VISUAL: {{visual}}, occupying the lower two thirds, photographic, bright natural light.\nPRIMARY TEXT: \"{{headline}}\", large bold geometric sans-serif, top-center, high contrast against the background, generous letter spacing.\nSECONDARY TEXT: \"{{cta}}\", roughly one third the size of the primary text, directly below it, same typeface in regular weight.\nLAYOUT: clear hierarchy, text never overlaps the main visual, safe margin of at least 8% on every edge, clean negative space behind the text.\nCOLOR PALETTE: {{palette}}; use the darkest palette color for text if contrast requires it.\nTYPOGRAPHY RULES: render both text blocks exactly as written, correct spelling, no extra words, no garbled or duplicated letters.\n\nNegative: no additional text, no fake logos, no watermark, no people, no clutter, no borders or frames.",
+  "example": {
+    "headline": "Summer Sale",
+    "cta": "Up to 40% off, this week only",
+    "visual": "a stack of colorful folded beach towels on white sand",
+    "palette": "coral, sand beige and deep teal",
+    "aspect_ratio": "1:1"
+  }
+}

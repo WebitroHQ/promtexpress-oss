@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schema/template.schema.json",
+  "id": "audio/podcast-intro-voiceover",
+  "title": "Podcast intro voice-over",
+  "description": "Writes a 15-20 second podcast intro script with performance directions for a text-to-speech voice or a human narrator.",
+  "category": "content-creation",
+  "modality": "audio",
+  "engine": null,
+  "language": "en",
+  "version": "1.0.0",
+  "authors": ["SpicesFire"],
+  "tags": ["podcast", "voice-over", "text-to-speech"],
+  "variables": [
+    { "name": "show_name", "description": "Name of the podcast", "required": true, "example": "Ship It Weekly" },
+    { "name": "show_promise", "description": "What listeners get from every episode", "required": true, "example": "honest stories from indie founders about what actually made their first $10k" },
+    { "name": "host", "description": "Host name or names", "required": true, "example": "Deniz and Mark" },
+    { "name": "voice_style", "description": "How the voice should sound", "required": true, "example": "warm, confident, conversational, mid-30s, slight smile in the voice" }
+  ],
+  "template": "Write and direct a podcast intro voice-over.\n\nShow: {{show_name}}\nPromise to the listener: {{show_promise}}\nHosts: {{host}}\nVoice: {{voice_style}}\n\nRequirements:\n- 40 to 55 spoken words, which reads in 15-20 seconds at a natural pace.\n- Open with a one-line hook that speaks to the listener's problem, not the show's name.\n- Say the show name once, in the second half.\n- Close with a handoff line that leads into the hosts, naming them.\n- Write for the ear: short sentences, no parentheses, no abbreviations or symbols that a voice would read awkwardly; spell out numbers the way they should be spoken.\n\nOutput two versions, each formatted as:\nSCRIPT: the exact words to be spoken\nDIRECTION: pacing, where to pause (mark pauses as [pause] in the script), which word to stress, and energy from start to finish\nMUSIC CUE: when the intro music should duck under the voice and when it should swell back",
+  "example": {
+    "show_name": "Ship It Weekly",
+    "show_promise": "honest stories from indie founders about what actually made their first $10k",
+    "host": "Deniz and Mark",
+    "voice_style": "warm, confident, conversational, mid-30s, slight smile in the voice"
+  }
+}

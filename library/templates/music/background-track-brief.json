@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schema/template.schema.json",
+  "id": "music/background-track-brief",
+  "title": "Background track for video",
+  "description": "An instrumental music prompt that stays under dialogue: defined tempo, instrumentation, structure and mix, for Suno, Udio and similar tools.",
+  "category": "content-creation",
+  "modality": "music",
+  "engine": null,
+  "language": "en",
+  "version": "1.0.0",
+  "authors": ["SpicesFire"],
+  "tags": ["instrumental", "background-music", "video"],
+  "variables": [
+    { "name": "use_case", "description": "Where the music will play", "required": true, "example": "a 90-second SaaS product walkthrough with voice-over" },
+    { "name": "mood", "description": "Emotional direction", "required": true, "example": "optimistic, focused, modern" },
+    { "name": "genre", "description": "Genre or reference style", "required": true, "example": "lo-fi electronic with light organic percussion" },
+    { "name": "tempo_bpm", "description": "Tempo in beats per minute", "required": true, "example": "96" }
+  ],
+  "template": "Instrumental {{genre}} track for {{use_case}}. Mood: {{mood}}. Tempo {{tempo_bpm}} BPM, steady and consistent throughout.\n\nInstrumentation: soft rhythmic foundation, warm bass, one simple melodic motif on a mellow lead; no vocals, no vocal chops, no spoken samples.\nStructure: 4-bar gentle intro, main groove that repeats with small variations every 8 bars so it can be looped or cut anywhere, a slight lift in the middle section, and a clean 2-bar resolved ending.\nMix: sit under a voice-over, mids kept clear between 1-4 kHz, no sudden drops, no loud risers, no hard stops, even dynamics.\n\nAvoid: lyrics, dramatic build-ups, dissonant or distracting solos, genre switches mid-track.",
+  "example": {
+    "use_case": "a 90-second SaaS product walkthrough with voice-over",
+    "mood": "optimistic, focused, modern",
+    "genre": "lo-fi electronic with light organic percussion",
+    "tempo_bpm": "96"
+  }
+}

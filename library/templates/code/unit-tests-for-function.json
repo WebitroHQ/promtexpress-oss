@@ -1,0 +1,24 @@
+{
+  "$schema": "../../schema/template.schema.json",
+  "id": "code/unit-tests-for-function",
+  "title": "Unit tests for a function",
+  "description": "Generates focused unit tests that cover behavior, edge cases and failure modes in your project's existing test framework and style.",
+  "category": "engineering",
+  "modality": "code",
+  "engine": null,
+  "language": "en",
+  "version": "1.0.0",
+  "authors": ["SpicesFire"],
+  "tags": ["testing", "unit-tests"],
+  "variables": [
+    { "name": "code", "description": "The function or module under test", "required": true, "example": "export function slugify(input: string): string { ... }" },
+    { "name": "framework", "description": "Test framework and language", "required": true, "example": "Vitest with TypeScript" },
+    { "name": "existing_test_example", "description": "A short existing test from the codebase, so style matches", "required": false, "example": "it('returns empty string for empty input', () => { expect(slugify('')).toBe('') })" }
+  ],
+  "template": "You are a senior engineer who writes tests that catch real bugs, not tests that restate the implementation.\n\nCode under test:\n```\n{{code}}\n```\n\nFramework: {{framework}}\nMatch the style of this existing test (naming, assertion style, structure):\n```\n{{existing_test_example}}\n```\n\nProcess:\n1. First, list the function's observable behaviors and its implicit contract in 3-8 bullets.\n2. List edge cases: empty and boundary inputs, unusual types or encodings, error paths, and anything order- or time-dependent.\n3. Then write the tests.\n\nTest rules:\n- Test behavior through the public interface only; do not assert on private helpers or call counts unless that is the contract.\n- One behavior per test, named as a sentence describing that behavior.\n- No mocks unless the code touches the network, filesystem, clock or randomness; when it does, control those explicitly.\n- If you find a case where the current code looks wrong, still write the test for the correct behavior and mark it with a comment starting \"POSSIBLE BUG:\".\n\nOutput the behavior list, the edge-case list, then one complete, runnable test file.",
+  "example": {
+    "code": "export function slugify(input: string): string {\n  return input.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');\n}",
+    "framework": "Vitest with TypeScript",
+    "existing_test_example": "it('returns empty string for empty input', () => { expect(slugify('')).toBe('') })"
+  }
+}

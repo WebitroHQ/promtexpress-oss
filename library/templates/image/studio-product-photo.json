@@ -1,0 +1,24 @@
+{
+  "$schema": "../../schema/template.schema.json",
+  "id": "image/studio-product-photo",
+  "title": "Studio product photo",
+  "description": "Clean e-commerce hero shot of a single product on a seamless background with controlled studio lighting.",
+  "category": "ecommerce",
+  "modality": "image",
+  "engine": null,
+  "language": "en",
+  "version": "1.0.0",
+  "authors": ["SpicesFire"],
+  "tags": ["product", "photography", "packshot"],
+  "variables": [
+    { "name": "product", "description": "The product, with material and color", "required": true, "example": "matte black ceramic coffee mug with a thin gold rim" },
+    { "name": "background", "description": "Backdrop color and surface", "required": true, "example": "warm off-white seamless paper" },
+    { "name": "aspect_ratio", "description": "Output aspect ratio", "required": true, "example": "4:5" }
+  ],
+  "template": "Studio product photograph of a single {{product}}, centered, three-quarter view from slightly above eye level, the whole product in frame with generous margin.\n\nBackground: {{background}}, seamless, no horizon line, subtle natural contact shadow under the product.\nLighting: large softbox key light from upper left, white bounce card on the right to open the shadows, thin rim light from behind to separate edges; soft, even, no blown highlights, accurate color.\nCamera: 100mm macro lens, f/8, everything in sharp focus, true-to-life proportions, no lens distortion.\nStyle: premium e-commerce catalog, minimal, clean, realistic material texture.\nAspect ratio {{aspect_ratio}}.\n\nNegative: no people, no hands, no props, no text, no logos other than those on the product itself, no watermark, no reflections of the studio, no duplicated product, no floating objects.",
+  "example": {
+    "product": "matte black ceramic coffee mug with a thin gold rim",
+    "background": "warm off-white seamless paper",
+    "aspect_ratio": "4:5"
+  }
+}

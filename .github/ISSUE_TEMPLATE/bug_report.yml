@@ -1,0 +1,40 @@
+name: Bug report
+description: Something in the SDKs, CLI or library does not work as documented
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Never paste a real API key. For billing, credits or account problems, contact PromtExpress support instead.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      options:
+        - JavaScript / TypeScript SDK (promtexpress)
+        - CLI (promtexpress-cli)
+        - Python SDK (promtexpress)
+        - Prompt library
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package version and runtime
+      placeholder: "promtexpress 0.1.0, Node 22.19 on macOS"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal code or commands that show the problem.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual behavior
+    validations:
+      required: true

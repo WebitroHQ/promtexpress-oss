@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schema/template.schema.json",
+  "id": "text/urun-aciklamasi-eticaret",
+  "title": "E-ticaret ürün açıklaması",
+  "description": "Yalnızca verdiğiniz bilgilere dayanan, fayda odaklı ürün sayfası metni, taranabilir özellik listesi ve SEO başlığı.",
+  "category": "ecommerce",
+  "modality": "text",
+  "engine": null,
+  "language": "tr",
+  "version": "1.0.0",
+  "authors": ["SpicesFire"],
+  "tags": ["copywriting", "seo", "product-page"],
+  "variables": [
+    { "name": "urun_adi", "description": "Mağazada görünen ürün adı", "required": true, "example": "Arcadia Keten Nevresim Takımı" },
+    { "name": "bilgiler", "description": "Malzeme, ölçü, özellik, bakım talimatı gibi doğrulanabilir bilgiler", "required": true, "example": "%100 taş yıkamalı Avrupa keteni; çift ve king size; gizli düğmeli kapama; 40°C'de makinede yıkanabilir" },
+    { "name": "hedef_kitle", "description": "Kim, neden satın alıyor", "required": true, "example": "İlk evini döşeyen, rahat ve otel havasında bir yatak odası isteyen çiftler" },
+    { "name": "marka_sesi", "description": "Mağazanın üslubu", "required": false, "example": "sıcak, sade, ünlem işareti yok" }
+  ],
+  "template": "Kıdemli bir e-ticaret metin yazarısın. \"{{urun_adi}}\" için ürün sayfası metnini yaz.\n\nDoğrulanmış bilgiler (yalnızca bunları kullan; sertifika, ödül, yorum veya rakam uydurma):\n{{bilgiler}}\n\nHedef müşteri: {{hedef_kitle}}\nMarka sesi: {{marka_sesi}}\n\nTeslim et:\n1. SEO başlığı: en fazla 60 karakter, ürün adı başta.\n2. Meta açıklama: en fazla 155 karakter, tek net fayda ve yumuşak bir harekete geçirici ifade.\n3. Kanca: Müşterinin ürünün keyfini sürdüğü anı anlatan tek cümle; özellik değil, deneyim.\n4. Gövde: 2 kısa paragraf (toplam en fazla 90 kelime). Her bilgiyi müşteri için ne anlama geldiğine çevir.\n5. Detaylar: Bilgilerin madde listesi, satır başına bir tane, net ve süssüz.\n\nKaçın: \"yüksek kalite\", \"herkes için mükemmel\", kanıtlanamayan üstünlük ifadeleri ve art arda birden fazla sıfat. Doğal, akıcı Türkçe kullan; çeviri kokan kalıplardan kaçın.",
+  "example": {
+    "urun_adi": "Arcadia Keten Nevresim Takımı",
+    "bilgiler": "%100 taş yıkamalı Avrupa keteni; çift ve king size; gizli düğmeli kapama; 40°C'de makinede yıkanabilir",
+    "hedef_kitle": "İlk evini döşeyen, rahat ve otel havasında bir yatak odası isteyen çiftler",
+    "marka_sesi": "sıcak, sade, ünlem işareti yok"
+  }
+}

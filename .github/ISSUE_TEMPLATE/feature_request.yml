@@ -1,0 +1,21 @@
+name: Feature request
+description: Propose an improvement to the SDKs, CLI or tooling
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: API sketch, command example or behavior.
+  - type: checkboxes
+    id: claim
+    attributes:
+      label: Contribution
+      options:
+        - label: I would like to implement this

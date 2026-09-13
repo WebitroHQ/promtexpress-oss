@@ -1,0 +1,17 @@
+node_modules/
+dist/
+*.tsbuildinfo
+
+__pycache__/
+*.egg-info/
+.venv/
+build/
+
+.env
+.env.*
+!.env.example
+
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

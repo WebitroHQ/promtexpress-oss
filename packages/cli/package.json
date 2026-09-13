@@ -1,0 +1,37 @@
+{
+  "name": "promtexpress-cli",
+  "version": "0.1.0",
+  "description": "Command-line interface for the PromtExpress API",
+  "license": "MIT",
+  "author": "Webitro",
+  "homepage": "https://promtexpress.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebitroHQ/promtexpress-oss.git",
+    "directory": "packages/cli"
+  },
+  "keywords": [
+    "promtexpress",
+    "prompt",
+    "prompt-engineering",
+    "cli",
+    "llm"
+  ],
+  "type": "module",
+  "bin": {
+    "promtexpress": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "promtexpress": "^0.1.0"
+  },
+  "engines": {
+    "node": ">=18.3"
+  }
+}

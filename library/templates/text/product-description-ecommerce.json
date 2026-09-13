@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schema/template.schema.json",
+  "id": "text/product-description-ecommerce",
+  "title": "E-commerce product description",
+  "description": "Benefit-led product page copy with a scannable spec list and SEO title, grounded only in the facts you provide.",
+  "category": "ecommerce",
+  "modality": "text",
+  "engine": null,
+  "language": "en",
+  "version": "1.0.0",
+  "authors": ["SpicesFire"],
+  "tags": ["copywriting", "seo", "product-page"],
+  "variables": [
+    { "name": "product_name", "description": "Product name as it appears in the store", "required": true, "example": "Arcadia Linen Duvet Cover" },
+    { "name": "facts", "description": "Materials, sizes, features, care instructions: anything verifiable", "required": true, "example": "100% stonewashed European linen; queen and king; hidden button closure; machine wash 40°C" },
+    { "name": "audience", "description": "Who buys this and why", "required": true, "example": "Couples furnishing their first home who want a relaxed, hotel-like bedroom" },
+    { "name": "brand_voice", "description": "Tone of the store", "required": false, "example": "warm, understated, no exclamation marks" }
+  ],
+  "template": "You are a senior e-commerce copywriter. Write the product page copy for \"{{product_name}}\".\n\nVerified facts (use only these; do not invent certifications, awards, reviews or numbers):\n{{facts}}\n\nTarget customer: {{audience}}\nBrand voice: {{brand_voice}}\n\nDeliver:\n1. SEO title: max 60 characters, product name first.\n2. Meta description: max 155 characters, one clear benefit and a soft call to action.\n3. Hook: one sentence describing the moment the customer enjoys the product, not its features.\n4. Body: 2 short paragraphs (max 90 words total). Translate each fact into what it means for the customer.\n5. Details: a bullet list of the facts, one per line, precise and unembellished.\n\nAvoid: \"high quality\", \"perfect for everyone\", superlatives you cannot prove, and more than one adjective in a row.",
+  "example": {
+    "product_name": "Arcadia Linen Duvet Cover",
+    "facts": "100% stonewashed European linen; queen and king; hidden button closure; machine wash 40°C",
+    "audience": "Couples furnishing their first home who want a relaxed, hotel-like bedroom",
+    "brand_voice": "warm, understated, no exclamation marks"
+  }
+}

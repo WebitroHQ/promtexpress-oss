@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schema/template.schema.json",
+  "id": "video/vertical-product-ad",
+  "title": "Vertical product ad (Reels / TikTok)",
+  "description": "Short 9:16 product video with a hook in the first second, a clear beat structure and an end card, for text-to-video models.",
+  "category": "marketing",
+  "modality": "video",
+  "engine": null,
+  "language": "en",
+  "version": "1.0.0",
+  "authors": ["SpicesFire"],
+  "tags": ["advertising", "short-form", "product"],
+  "variables": [
+    { "name": "product", "description": "The product and its key visual trait", "required": true, "example": "a translucent orange insulated water bottle" },
+    { "name": "setting", "description": "Where the action happens", "required": true, "example": "a sunny rooftop gym at golden hour" },
+    { "name": "key_moment", "description": "The single action that shows the benefit", "required": true, "example": "ice cubes still rattling inside after a full workout" },
+    { "name": "duration_seconds", "description": "Total length; most models handle 5-10 seconds best", "required": true, "example": "8" }
+  ],
+  "template": "A {{duration_seconds}}-second vertical 9:16 product video of {{product}} in {{setting}}.\n\nSeconds 0-1 (hook): extreme close-up with fast push-in on {{product}} as it enters frame, instantly recognizable.\nMiddle: handheld medium shot of a person using it naturally; the action builds to {{key_moment}}, shown clearly in a slow-motion beat.\nFinal 2 seconds: static centered hero shot of the product on a clean surface, gentle light sweep across it, empty space in the top third reserved for an end-card logo added in editing.\n\nCamera: smooth gimbal movement, shallow depth of field, 35mm look.\nLighting: warm natural key light, soft rim light on the product, realistic reflections.\nMood: energetic, authentic, premium but not glossy.\nAudio: upbeat ambient sound design matching the setting, no dialogue, no voice-over.\n\nAvoid: on-screen text, watermarks, visible brand names other than the product's own, distorted hands, flickering, morphing product shape, abrupt cuts between unrelated scenes.",
+  "example": {
+    "product": "a translucent orange insulated water bottle",
+    "setting": "a sunny rooftop gym at golden hour",
+    "key_moment": "ice cubes still rattling inside after a full workout",
+    "duration_seconds": "8"
+  }
+}

@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Account, billing or credits
+    url: https://promtexpress.com
+    about: Questions about your PromtExpress account are handled by PromtExpress support, not in this repository.
