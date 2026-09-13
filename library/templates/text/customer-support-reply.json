@@ -1,12 +1,21 @@
 {
+  "$schema": "../../schema/template.schema.json",
   "id": "text/customer-support-reply",
   "title": "Customer Support Reply",
+  "description": "Draft an empathetic, policy-accurate reply to a customer support inquiry with clear guardrails.",
   "category": "customer-support",
   "modality": "text",
+  "engine": null,
   "language": "en",
   "version": "1.0.0",
-  "description": "Draft an empathetic, policy-accurate reply to a customer support inquiry with clear guardrails.",
-  "authors": ["resularabaci"],
+  "authors": [
+    "resularabaci"
+  ],
+  "tags": [
+    "customer-support",
+    "email",
+    "tone-of-voice"
+  ],
   "variables": [
     {
       "name": "customer_message",
@@ -33,5 +42,11 @@
       "example": "Apologize sincerely, refund the express shipping fee, and initiate a carrier investigation to expedite package status."
     }
   ],
-  "template": "You are an expert customer support specialist. Your goal is to draft a clear, empathetic, and policy-compliant reply to a customer inquiry.\n\n### Inputs\n- Customer Message: {{customer_message}}\n- Relevant Policy: {{relevant_policy}}\n- Brand Voice: {{brand_voice}}\n- Resolution Offered: {{resolution_offered}}\n\n### Core Instructions\n1. Empathy & Tone: Acknowledge the customer's feelings sincerely while matching the specified Brand Voice.\n2. Clear Resolution: Clearly communicate the Resolution Offered and explain any next steps.\n3. Strict Policy Adherence: Base every claim, promise, and timeline strictly on the Relevant Policy.\n4. No Unauthorized Commitments: Never promise refunds, credits, discounts, or exceptions not explicitly permitted by the policy or resolution.\n5. Unresolved Issues: If the issue cannot be resolved within policy boundaries, state what can be done clearly and offer escalation.\n\nGenerate only the final, ready-to-send reply."
+  "template": "You are an expert customer support specialist. Your goal is to draft a clear, empathetic, and policy-compliant reply to a customer inquiry.\n\n### Inputs\n- Customer Message: {{customer_message}}\n- Relevant Policy: {{relevant_policy}}\n- Brand Voice: {{brand_voice}}\n- Resolution Offered: {{resolution_offered}}\n\n### Core Instructions\n1. Empathy & Tone: Acknowledge the customer's feelings sincerely while matching the specified Brand Voice.\n2. Clear Resolution: Clearly communicate the Resolution Offered and explain any next steps.\n3. Strict Policy Adherence: Base every claim, promise, and timeline strictly on the Relevant Policy.\n4. No Unauthorized Commitments: Never promise refunds, credits, discounts, or exceptions not explicitly permitted by the policy or resolution.\n5. Unresolved Issues: If the issue cannot be resolved within policy boundaries, state what can be done clearly and offer escalation.\n\nGenerate only the final, ready-to-send reply.",
+  "example": {
+    "customer_message": "My order #1042 was supposed to arrive two days ago for my daughter's birthday. Tracking has not updated, and I'm very frustrated.",
+    "relevant_policy": "Shipments delayed more than 48 hours past the estimated delivery window qualify for a full refund of shipping charges. Standard replacement orders can be dispatched if tracking shows no movement for 5 consecutive business days.",
+    "brand_voice": "Empathetic, apologetic, solution-focused, and warm.",
+    "resolution_offered": "Apologize sincerely, refund the express shipping fee, and initiate a carrier investigation to expedite package status."
+  }
 }
