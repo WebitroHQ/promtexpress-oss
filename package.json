@@ -8,8 +8,9 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces",
-    "test": "npm run build && npm run test --workspaces && npm run validate:library",
-    "validate:library": "node scripts/validate-library.mjs"
+    "test": "npm run build && npm run test --workspaces && npm run validate:library && npm run test:validator",
+    "validate:library": "node scripts/validate-library.mjs",
+    "test:validator": "node --test scripts/validate-library.test.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

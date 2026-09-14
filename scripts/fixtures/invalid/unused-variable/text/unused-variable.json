@@ -1,0 +1,27 @@
+{
+  "id": "text/unused-variable",
+  "title": "Fixture template",
+  "description": "A minimal template used only by the validator tests.",
+  "category": "testing",
+  "modality": "text",
+  "language": "en",
+  "version": "1.0.0",
+  "authors": [
+    "fixture"
+  ],
+  "variables": [
+    {
+      "name": "topic",
+      "description": "What to write about",
+      "required": true,
+      "example": "release notes"
+    },
+    {
+      "name": "tone",
+      "description": "Voice of the text",
+      "required": false,
+      "example": "neutral"
+    }
+  ],
+  "template": "Write a short, factual paragraph about {{topic}} for a technical audience."
+}

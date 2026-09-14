@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 // Validates every template under library/templates. Zero dependencies so contributors can run it anywhere:
-//   node scripts/validate-library.mjs
-import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join, relative, sep } from "node:path";
+//   node scripts/validate-library.mjs [templates-dir]
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const ROOT = fileURLToPath(new URL("../library/templates", import.meta.url));
+const DEFAULT_ROOT = fileURLToPath(new URL("../library/templates", import.meta.url));
+// The optional argument points the validator at another directory; the fixture tests use it.
+const ROOT = process.argv[2] ? resolve(process.argv[2]) : DEFAULT_ROOT;
+const ROOT_LABEL = relative(process.cwd(), ROOT).split(sep).join("/") || ".";
 const MODALITIES = ["text", "code", "image", "video", "audio", "music"];
 const REQUIRED = ["id", "title", "description", "category", "modality", "language", "version", "authors", "variables", "template"];
 const ALLOWED = new Set([...REQUIRED, "$schema", "engine", "tags", "example"]);
@@ -95,12 +98,22 @@ function validate(file, seenIds) {
   return errors;
 }
 
+if (!existsSync(ROOT) || !statSync(ROOT).isDirectory()) {
+  console.error(`✖ templates directory not found: ${ROOT_LABEL}`);
+  process.exit(1);
+}
+
 const files = walk(ROOT);
+// A renamed folder or a path that matches nothing must fail loudly instead of reporting a clean run.
+if (files.length === 0) {
+  console.error(`✖ no templates found under ${ROOT_LABEL}; refusing to report success`);
+  process.exit(1);
+}
 const seenIds = new Set();
 const errors = files.flatMap((file) => validate(file, seenIds));
 
 if (errors.length) {
-  console.error(`✖ ${errors.length} problem(s) in library/templates:\n`);
+  console.error(`✖ ${errors.length} problem(s) in ${ROOT_LABEL}:\n`);
   for (const error of errors) console.error(`  ${error}`);
   process.exit(1);
 }
