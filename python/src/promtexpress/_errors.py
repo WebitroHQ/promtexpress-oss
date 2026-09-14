@@ -25,6 +25,18 @@ class AuthenticationError(APIError):
     """401: the API key is missing, invalid, expired or revoked."""
 
 
+class PermissionDeniedError(APIError):
+    """403: the API key is valid but lacks the scope this endpoint needs (read, generate or admin)."""
+
+    def __init__(self, status: int, message: str, body: Any) -> None:
+        super().__init__(status, message, body)
+        error = _string_field(body, "error") or ""
+        prefix = "missing scope:"
+        scope = error[len(prefix):].strip() if error.lower().startswith(prefix) else ""
+        #: The scope the key is missing, e.g. "generate"; None if the API did not say.
+        self.missing_scope = scope or None
+
+
 class InsufficientCreditsError(APIError):
     """402: not enough credits left for this generation."""
 
@@ -59,6 +71,8 @@ def error_from_response(status: int, body: Any, headers: Mapping[str, str]) -> A
         return AuthenticationError(status, message, body)
     if status == 402:
         return InsufficientCreditsError(status, message, body)
+    if status == 403:
+        return PermissionDeniedError(status, message, body)
     if status == 429:
         retry_after = _number_field(body, "retryAfterSec")
         if retry_after is None:

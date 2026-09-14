@@ -54,6 +54,18 @@ for await (const entry of client.paginateHistory({ modality: "video" })) {
 }
 ```
 
+## API key scopes
+
+Keys are created in the PromtExpress dashboard under **API Keys**, each with one or more scopes:
+
+| Scope | Allows |
+|---|---|
+| `read` | `listTemplates`, `listHistory`, `paginateHistory` |
+| `generate` | `generate` (consumes credits) |
+| `admin` | everything above |
+
+Each key also has its own rate limit; exceeding it returns a `RateLimitError` with `retryAfterSec`.
+
 ## Errors
 
 Every error extends `PromtExpressError`:
@@ -62,6 +74,7 @@ Every error extends `PromtExpressError`:
 |---|---|
 | `InvalidRequestError` | 400: request failed validation |
 | `AuthenticationError` | 401: key missing, invalid, expired or revoked |
+| `PermissionDeniedError` | 403: the key lacks a scope; has `missingScope` |
 | `InsufficientCreditsError` | 402: has `remaining` and `required` |
 | `RateLimitError` | 429: has `retryAfterSec` (null for the per-prompt iteration limit) |
 | `ServerError` | 5xx: generation pipeline or upstream engine failure |

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { AuthenticationError, type ClientOptions, type GenerateParams } from "promtexpress";
+import { AuthenticationError, PermissionDeniedError, type ClientOptions, type GenerateParams } from "promtexpress";
 import { run, type Client, type Io } from "../src/run.ts";
 
 function captureIo(env: Record<string, string> = { PROMTEXPRESS_API_KEY: "pe_test_cli" }, stdin = "") {
@@ -97,6 +97,19 @@ describe("promtexpress CLI", () => {
       assert.equal(await run(argv, io, fakeClient().factory), 2, argv.join(" "));
       assert.match(stderr(), /--help/);
     }
+  });
+
+  it("explains which scope is missing on 403", async () => {
+    const { io, stderr } = captureIo();
+    const { factory } = fakeClient({
+      generate: async () => {
+        throw new PermissionDeniedError(403, "Missing scope: generate", { error: "Missing scope: generate" });
+      },
+    });
+
+    assert.equal(await run(["generate", "launch email"], io, factory), 1);
+    assert.match(stderr(), /Error: Missing scope: generate/);
+    assert.match(stderr(), /"generate" scope/);
   });
 
   it("exits 1 and prints the API error message", async () => {

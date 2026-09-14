@@ -1,6 +1,6 @@
 {
   "name": "promtexpress-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Command-line interface for the PromtExpress API",
   "license": "MIT",
   "author": "Webitro",
@@ -29,7 +29,7 @@
     "test": "node --test \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "promtexpress": "^0.1.0"
+    "promtexpress": "^0.2.0"
   },
   "engines": {
     "node": ">=18.3"

@@ -5,6 +5,7 @@ export {
   APIConnectionError,
   InvalidRequestError,
   AuthenticationError,
+  PermissionDeniedError,
   InsufficientCreditsError,
   RateLimitError,
   ServerError,

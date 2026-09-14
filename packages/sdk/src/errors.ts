@@ -25,6 +25,18 @@ export class InvalidRequestError extends APIError {}
 /** 401: the API key is missing, invalid, expired or revoked. */
 export class AuthenticationError extends APIError {}
 
+/** 403: the API key is valid but lacks the scope this endpoint needs (read, generate or admin). */
+export class PermissionDeniedError extends APIError {
+  /** The scope the key is missing, e.g. "generate"; null if the API did not say. */
+  readonly missingScope: string | null;
+
+  constructor(status: number, message: string, body: unknown) {
+    super(status, message, body);
+    const match = /^Missing scope: *([a-z_]+)/i.exec(stringField(body, "error") ?? "");
+    this.missingScope = match ? match[1] : null;
+  }
+}
+
 /** 402: not enough credits left for this generation. */
 export class InsufficientCreditsError extends APIError {
   readonly remaining: number | null;
@@ -59,6 +71,7 @@ export function errorFromResponse(status: number, body: unknown, headers: Header
   if (status === 400) return new InvalidRequestError(status, message, body);
   if (status === 401) return new AuthenticationError(status, message, body);
   if (status === 402) return new InsufficientCreditsError(status, message, body);
+  if (status === 403) return new PermissionDeniedError(status, message, body);
   if (status === 429) {
     const retryAfter = numberField(body, "retryAfterSec") ?? parseRetryAfter(headers.get("retry-after"));
     return new RateLimitError(status, message, body, retryAfter);

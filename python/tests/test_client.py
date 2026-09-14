@@ -9,6 +9,7 @@ from promtexpress import (
     APIConnectionError,
     AuthenticationError,
     InsufficientCreditsError,
+    PermissionDeniedError,
     PromtExpress,
     PromtExpressError,
     RateLimitError,
@@ -129,6 +130,14 @@ class ClientTest(unittest.TestCase):
             self.client.list_templates()
         self.assertEqual(ctx.exception.status, 401)
         self.assertEqual(str(ctx.exception), "Invalid or inactive API key")
+
+    def test_permission_denied_exposes_missing_scope(self):
+        self.api.reply(403, {"error": "Missing scope: read"})
+
+        with self.assertRaises(PermissionDeniedError) as ctx:
+            self.client.list_templates()
+        self.assertEqual(ctx.exception.status, 403)
+        self.assertEqual(ctx.exception.missing_scope, "read")
 
     def test_insufficient_credits(self):
         self.api.reply(402, {"error": "Insufficient credits", "remaining": 1, "required": 4})

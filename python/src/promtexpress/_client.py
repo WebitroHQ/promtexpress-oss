@@ -15,7 +15,7 @@ from ._types import Answer, GenerateResult, HistoryPage, HistoryRow, Iteration, 
 DEFAULT_BASE_URL = "https://promtexpress.com/api/v1"
 MODALITIES = ("text", "code", "image", "video", "audio", "music")
 
-_USER_AGENT = "promtexpress-python/0.1.0"
+_USER_AGENT = "promtexpress-python/0.2.0"
 
 
 class PromtExpress:

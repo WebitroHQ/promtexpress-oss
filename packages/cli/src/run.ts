@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
-import { MODALITIES, PromtExpress, PromtExpressError, type ClientOptions, type Modality } from "promtexpress";
+import { MODALITIES, PermissionDeniedError, PromtExpress, PromtExpressError, type ClientOptions, type Modality } from "promtexpress";
 
 export interface Io {
   stdout: (text: string) => void;
@@ -67,6 +67,9 @@ export async function run(argv: string[], io: Io, createClient: ClientFactory = 
     }
     if (err instanceof PromtExpressError) {
       io.stderr(`Error: ${err.message}\n`);
+      if (err instanceof PermissionDeniedError && err.missingScope) {
+        io.stderr(`Create an API key with the "${err.missingScope}" scope in the PromtExpress dashboard under API Keys.\n`);
+      }
       return 1;
     }
     throw err;

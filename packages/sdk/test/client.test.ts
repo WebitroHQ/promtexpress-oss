@@ -4,6 +4,7 @@ import {
   APIConnectionError,
   AuthenticationError,
   InsufficientCreditsError,
+  PermissionDeniedError,
   PromtExpress,
   PromtExpressError,
   RateLimitError,
@@ -99,6 +100,19 @@ describe("PromtExpress", () => {
       assert.equal(err.message, "Invalid or inactive API key");
       return true;
     });
+  });
+
+  it("maps 403 to PermissionDeniedError and exposes the missing scope", async () => {
+    const { fetch, calls } = mockFetch([{ status: 403, body: { error: "Missing scope: generate" } }]);
+    const client = new PromtExpress({ apiKey: "k", fetch });
+
+    await assert.rejects(client.generate({ intent: "launch email", modality: "text" }), (err: unknown) => {
+      assert.ok(err instanceof PermissionDeniedError);
+      assert.equal(err.status, 403);
+      assert.equal(err.missingScope, "generate");
+      return true;
+    });
+    assert.equal(calls.length, 1);
   });
 
   it("exposes remaining and required credits on 402", async () => {

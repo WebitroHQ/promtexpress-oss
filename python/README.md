@@ -49,9 +49,13 @@ for entry in client.iter_history(modality="video"):
     print(entry["date"], entry["title"])
 ```
 
+## API key scopes
+
+Create keys in the PromtExpress dashboard under **API Keys**. The `read` scope covers `list_templates`, `list_history` and `iter_history`; `generate` covers `generate` (consumes credits); `admin` allows everything. Each key has its own rate limit.
+
 ## Errors
 
-All errors inherit from `PromtExpressError`: `InvalidRequestError` (400), `AuthenticationError` (401), `InsufficientCreditsError` (402, with `remaining` and `required`), `RateLimitError` (429, with `retry_after`), `ServerError` (5xx) and `APIConnectionError` (network or timeout).
+All errors inherit from `PromtExpressError`: `InvalidRequestError` (400), `AuthenticationError` (401), `PermissionDeniedError` (403, with `missing_scope`), `InsufficientCreditsError` (402, with `remaining` and `required`), `RateLimitError` (429, with `retry_after`), `ServerError` (5xx) and `APIConnectionError` (network or timeout).
 
 Time-based rate limits are retried automatically (`max_retries`, default 2).
 
