@@ -73,7 +73,7 @@ New templates, translations, bug fixes, examples and new language SDKs are all w
 ### Contributors
 
 <a href="https://github.com/WebitroHQ/promtexpress-oss/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=WebitroHQ/promtexpress-oss" alt="Contributors" />
+  <img src="https://contrib.rocks/image?repo=WebitroHQ/promtexpress-oss" alt="Contributors"/>
 </a>
 
 ## License
