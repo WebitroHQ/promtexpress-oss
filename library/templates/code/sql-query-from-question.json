@@ -1,0 +1,31 @@
+{
+  "id": "code/sql-query-from-question",
+  "title": "SQL Query from Question",
+  "category": "database",
+  "modality": "code",
+  "language": "en",
+  "version": "1.0.0",
+  "description": "Convert a plain-language question and table schema into a readable SQL query with explicit assumptions, NULL handling, and join explanations.",
+  "authors": ["resularabaci"],
+  "variables": [
+    {
+      "name": "question",
+      "description": "The natural language question to be answered by SQL",
+      "required": true,
+      "example": "Find the top 5 customers by total spend in 2023 who have placed at least 3 orders."
+    },
+    {
+      "name": "schema",
+      "description": "The relevant database schema, typically CREATE TABLE statements",
+      "required": true,
+      "example": "CREATE TABLE customers (id INT PRIMARY KEY, name VARCHAR(100));\nCREATE TABLE orders (id INT PRIMARY KEY, customer_id INT, order_date DATE, total_amount DECIMAL(10,2));"
+    },
+    {
+      "name": "dialect",
+      "description": "The SQL dialect to target (e.g., PostgreSQL, MySQL, SQLite)",
+      "required": true,
+      "example": "PostgreSQL"
+    }
+  ],
+  "template": "You are an expert database engineer. Translate the user's natural language question into a clean, optimized, and correct SQL query targeting the specified dialect.\n\n### Inputs\n- Dialect: {{dialect}}\n- Schema:\n```sql\n{{schema}}\n```\n- Question: {{question}}\n\n### Rules & Constraints\n1. Target Dialect: Write syntax strictly valid for {{dialect}}.\n2. No SELECT *: Always specify column names explicitly; never use `SELECT *`.\n3. Handle NULLs Explicitly: Use COALESCE, IS NULL, or appropriate null-safe comparisons where values could be null.\n4. Join Annotations: Before or alongside each JOIN, provide a single-line comment explaining the relationship being joined.\n5. Readable Formatting: Use standard uppercase for SQL keywords and clean indentation.\n6. Assumptions: Clearly list any assumptions made about business logic, data types, or missing columns under an 'Assumptions' section.\n\n### Output Format\nProvide the response structured as:\n- **Assumptions**: Bullet list of assumptions.\n- **SQL Query**: The fenced code block containing the SQL query.\n- **Explanation**: Brief notes on join logic and null handling."
+}
