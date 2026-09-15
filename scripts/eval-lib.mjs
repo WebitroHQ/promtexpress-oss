@@ -24,6 +24,22 @@ export function sha256(text) {
   return createHash("sha256").update(text, "utf8").digest("hex");
 }
 
+const canonical = (value) => {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+  if (value !== null && typeof value === "object") {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonical(value[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+};
+
+/** Short fingerprint of a check definition, so every stored score points at the exact check that produced it. */
+export function checkHash(check) {
+  return sha256(canonical(check)).slice(0, 12);
+}
+
 /** Problems with one check definition; empty when the check is valid. */
 export function checkProblems(check, variables) {
   if (typeof check !== "object" || check === null) return ["must be an object"];
@@ -122,7 +138,7 @@ export function scoreCheck(check, output, variables) {
   const raw = rawScore(check, output, variables);
   const precision = PRECISION[check.type];
   const factor = 10 ** precision;
-  return { name: check.name, score: Math.round(raw * factor) / factor, precision, pass: raw >= (check.minScore ?? 1) };
+  return { name: check.name, check: checkHash(check), score: Math.round(raw * factor) / factor, precision, pass: raw >= (check.minScore ?? 1) };
 }
 
 /** Scores every recorded sample of a run with the suite's checks, one entry per sample. */

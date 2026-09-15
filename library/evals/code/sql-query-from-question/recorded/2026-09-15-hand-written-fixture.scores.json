@@ -9,36 +9,42 @@
           "checks": [
             {
               "name": "has-required-sections",
+              "check": "5db60c0d5409",
               "score": 1,
               "precision": 2,
               "pass": true
             },
             {
               "name": "fenced-sql-block",
+              "check": "b9d778c9919c",
               "score": 1,
               "precision": 0,
               "pass": true
             },
             {
               "name": "no-select-star",
+              "check": "7ba0fecc3ad5",
               "score": 1,
               "precision": 0,
               "pass": true
             },
             {
               "name": "limits-to-2023",
+              "check": "32667ecb8a62",
               "score": 1,
               "precision": 0,
               "pass": true
             },
             {
               "name": "requires-three-orders",
+              "check": "9d8e4ab99940",
               "score": 1,
               "precision": 0,
               "pass": true
             },
             {
               "name": "join-has-comment",
+              "check": "6d1b6993baf4",
               "score": 1,
               "precision": 0,
               "pass": true
@@ -49,36 +55,42 @@
           "checks": [
             {
               "name": "has-required-sections",
+              "check": "5db60c0d5409",
               "score": 1,
               "precision": 2,
               "pass": true
             },
             {
               "name": "fenced-sql-block",
+              "check": "b9d778c9919c",
               "score": 1,
               "precision": 0,
               "pass": true
             },
             {
               "name": "no-select-star",
+              "check": "7ba0fecc3ad5",
               "score": 0,
               "precision": 0,
               "pass": false
             },
             {
               "name": "limits-to-2023",
+              "check": "32667ecb8a62",
               "score": 1,
               "precision": 0,
               "pass": true
             },
             {
               "name": "requires-three-orders",
+              "check": "9d8e4ab99940",
               "score": 0,
               "precision": 0,
               "pass": false
             },
             {
               "name": "join-has-comment",
+              "check": "6d1b6993baf4",
               "score": 0,
               "precision": 0,
               "pass": false
@@ -94,30 +106,35 @@
           "checks": [
             {
               "name": "has-required-sections",
+              "check": "5db60c0d5409",
               "score": 1,
               "precision": 2,
               "pass": true
             },
             {
               "name": "fenced-sql-block",
+              "check": "b9d778c9919c",
               "score": 1,
               "precision": 0,
               "pass": true
             },
             {
               "name": "no-select-star",
+              "check": "7ba0fecc3ad5",
               "score": 1,
               "precision": 0,
               "pass": true
             },
             {
               "name": "null-discount-counted-as-zero",
+              "check": "837cdf6cf5f4",
               "score": 1,
               "precision": 0,
               "pass": true
             },
             {
               "name": "no-postgres-only-syntax",
+              "check": "4a248ab78e65",
               "score": 1,
               "precision": 0,
               "pass": true
@@ -128,30 +145,35 @@
           "checks": [
             {
               "name": "has-required-sections",
+              "check": "5db60c0d5409",
               "score": 1,
               "precision": 2,
               "pass": true
             },
             {
               "name": "fenced-sql-block",
+              "check": "b9d778c9919c",
               "score": 1,
               "precision": 0,
               "pass": true
             },
             {
               "name": "no-select-star",
+              "check": "7ba0fecc3ad5",
               "score": 1,
               "precision": 0,
               "pass": true
             },
             {
               "name": "null-discount-counted-as-zero",
+              "check": "837cdf6cf5f4",
               "score": 0,
               "precision": 0,
               "pass": false
             },
             {
               "name": "no-postgres-only-syntax",
+              "check": "4a248ab78e65",
               "score": 0,
               "precision": 0,
               "pass": false

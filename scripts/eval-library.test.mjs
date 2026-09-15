@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
-import { checkProblems, scoreCheck, scoreRun, tableColumn } from "./eval-lib.mjs";
+import { checkHash, checkProblems, scoreCheck, scoreRun, tableColumn } from "./eval-lib.mjs";
 
 const RUNNER = fileURLToPath(new URL("./eval-library.mjs", import.meta.url));
 const FIXTURES = fileURLToPath(new URL("./fixtures/evals", import.meta.url));
@@ -54,7 +54,21 @@ describe("eval checks", () => {
   it("scores quotes against the input, ignoring quote marks, case and spacing", () => {
     const check = { name: "quotes", type: "table-column-in-variable", column: "Source quote", variable: "notes" };
     const output = '| Action | Source quote |\n|---|---|\n| a | “Ship   ON friday” |\n| b | "made up" |';
-    assert.deepEqual(scoreCheck(check, output, { notes: "We ship on Friday." }), { name: "quotes", score: 0.5, precision: 2, pass: false });
+    assert.deepEqual(scoreCheck(check, output, { notes: "We ship on Friday." }), {
+      name: "quotes",
+      check: checkHash(check),
+      score: 0.5,
+      precision: 2,
+      pass: false,
+    });
+  });
+
+  it("fingerprints the check definition, not its key order", () => {
+    const check = { name: "no-star", type: "not-matches", pattern: "SELECT\\s+\\*", flags: "i" };
+    assert.match(checkHash(check), /^[0-9a-f]{12}$/);
+    assert.equal(checkHash({ flags: "i", pattern: "SELECT\\s+\\*", type: "not-matches", name: "no-star" }), checkHash(check));
+    assert.notEqual(checkHash({ ...check, minScore: 0 }), checkHash(check));
+    assert.notEqual(checkHash({ ...check, pattern: "SELECT\\s*\\*" }), checkHash(check));
   });
 
   it("decides pass from the unrounded score, not the rounded one", () => {
@@ -116,7 +130,7 @@ describe("eval-library runner", () => {
       assert.equal(code, 0, output);
     }));
 
-  it("shows a threshold change as a change in the stored scores", () =>
+  it("shows a threshold change as a change in the stored scores, pointing at the changed check", () =>
     withCopy((evals, templates) => {
       const path = join(evals, SUITE);
       const suite = JSON.parse(readFileSync(path, "utf8"));
@@ -124,7 +138,7 @@ describe("eval-library runner", () => {
       writeFileSync(path, JSON.stringify(suite, null, 2));
       const { code, output } = runFixture(evals, templates);
       assert.equal(code, 1, output);
-      assert.match(output, /case "greets-ada" sample 2 check "mentions-name" pass: stored false, recomputed true/);
+      assert.match(output, /case "greets-ada" sample 1 check "mentions-name" check: stored "[0-9a-f]{12}", recomputed "[0-9a-f]{12}"/);
     }));
 
   it("makes a shrinking suite loud, even when the removal is declared", () =>
@@ -146,7 +160,7 @@ describe("eval-library runner", () => {
       writeFileSync(suitePath, JSON.stringify({ ...suite, retired: [{ id: "greets-bob", reason: "Duplicates greets-ada with a different name." }] }));
       const stale = runFixture(evals, templates);
       assert.equal(stale.code, 1, stale.output);
-      assert.match(stale.output, /stored scores are out of date at case "greets-bob": stored \{.*\}, recomputed nothing/);
+      assert.match(stale.output, /stored scores are out of date at case "greets-bob": stored \{.*, recomputed nothing/);
 
       assert.equal(runFixture(evals, templates, "--write").code, 0);
       const { code, output } = runFixture(evals, templates);
