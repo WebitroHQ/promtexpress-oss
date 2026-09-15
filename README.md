@@ -77,7 +77,7 @@ Everyone who has shipped a commit or authored a template. Updated automatically 
 <!-- contributors:start -->
 <table>
   <tr>
-    <td align="center" valign="top" width="14%"><a href="https://github.com/SpicesFire"><img src="https://github.com/SpicesFire.png?size=100" width="64" height="64" alt="SpicesFire"/><br/><sub><b>SpicesFire</b></sub></a><br/><sub>11 commits · 10 templates</sub></td>
+    <td align="center" valign="top" width="14%"><a href="https://github.com/SpicesFire"><img src="https://github.com/SpicesFire.png?size=100" width="64" height="64" alt="SpicesFire"/><br/><sub><b>SpicesFire</b></sub></a><br/><sub>12 commits · 10 templates</sub></td>
     <td align="center" valign="top" width="14%"><a href="https://github.com/resularabaci"><img src="https://github.com/resularabaci.png?size=100" width="64" height="64" alt="resularabaci"/><br/><sub><b>resularabaci</b></sub></a><br/><sub>2 commits · 2 templates</sub></td>
   </tr>
 </table>
