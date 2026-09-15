@@ -1,0 +1,14 @@
+{
+  "id": "text/greeting",
+  "title": "Greeting",
+  "version": "1.0.0",
+  "variables": [
+    {
+      "name": "name",
+      "description": "Who to greet",
+      "required": true,
+      "example": "Ada"
+    }
+  ],
+  "template": "Write a one-line greeting for {{name}} that mentions their name exactly once."
+}

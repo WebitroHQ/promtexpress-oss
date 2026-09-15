@@ -1,0 +1,47 @@
+{
+  "format": 1,
+  "run": "2026-09-15-fixture",
+  "cases": [
+    {
+      "id": "greets-ada",
+      "samples": [
+        {
+          "checks": [
+            {
+              "name": "mentions-name",
+              "check": "ee63ab6d69b1",
+              "score": 0.5,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "single-line",
+              "check": "c24ca33e282c",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            }
+          ]
+        },
+        {
+          "checks": [
+            {
+              "name": "mentions-name",
+              "check": "ee63ab6d69b1",
+              "score": 0,
+              "precision": 2,
+              "pass": false
+            },
+            {
+              "name": "single-line",
+              "check": "c24ca33e282c",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
