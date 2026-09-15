@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Rewrites the contributors block in README.md from two sources: GitHub commit contributors and the
+// Rewrites the contributors block in README.md and in the package READMEs (the pages shown on npm and
+// PyPI, refreshed on each release) from two sources: GitHub commit contributors and the
 // `authors` field of every template, so people credited only in a template still get an avatar.
 //   GITHUB_TOKEN=... node scripts/update-contributors.mjs
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
@@ -7,7 +8,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const REPO = process.env.GITHUB_REPOSITORY ?? "WebitroHQ/promtexpress-oss";
-const README = fileURLToPath(new URL("../README.md", import.meta.url));
+const READMES = ["README.md", "packages/sdk/README.md", "packages/cli/README.md", "python/README.md"];
 const TEMPLATES = fileURLToPath(new URL("../library/templates", import.meta.url));
 const START = "<!-- contributors:start -->";
 const END = "<!-- contributors:end -->";
@@ -68,14 +69,17 @@ const rows = [];
 for (let i = 0; i < people.length; i += PER_ROW) rows.push(`  <tr>\n${people.slice(i, i + PER_ROW).map(cell).join("\n")}\n  </tr>`);
 const block = `${START}\n<table>\n${rows.join("\n")}\n</table>\n${END}`;
 
-const readme = readFileSync(README, "utf8");
-const from = readme.indexOf(START);
-const to = readme.indexOf(END, from);
-if (from === -1 || to === -1) throw new Error(`README.md has no ${START} ... ${END} block`);
-const next = readme.slice(0, from) + block + readme.slice(to + END.length);
-if (next === readme) {
-  console.log(`contributors unchanged (${people.length})`);
-} else {
-  writeFileSync(README, next);
-  console.log(`contributors updated (${people.length}): ${people.map((p) => p.login).join(", ")}`);
+for (const file of READMES) {
+  const path = fileURLToPath(new URL(`../${file}`, import.meta.url));
+  const readme = readFileSync(path, "utf8");
+  const from = readme.indexOf(START);
+  const to = readme.indexOf(END, from);
+  if (from === -1 || to === -1) throw new Error(`${file} has no ${START} ... ${END} block`);
+  const next = readme.slice(0, from) + block + readme.slice(to + END.length);
+  if (next === readme) {
+    console.log(`${file}: contributors unchanged (${people.length})`);
+  } else {
+    writeFileSync(path, next);
+    console.log(`${file}: contributors updated (${people.length}): ${people.map((p) => p.login).join(", ")}`);
+  }
 }
