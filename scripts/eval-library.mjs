@@ -56,7 +56,7 @@ function loadSuite(path) {
     return null;
   }
   const expected = `${parts[0]}/${parts[1]}`;
-  for (const key of Object.keys(suite)) if (!["format", "template", "samples", "cases"].includes(key)) fail(`unknown field "${key}"`);
+  for (const key of Object.keys(suite)) if (!["format", "template", "samples", "cases", "retired"].includes(key)) fail(`unknown field "${key}"`);
   if (suite.format !== FORMAT) fail(`format must be ${FORMAT}`);
   if (suite.template !== expected) {
     fail(`template must match the folder: expected "${expected}", got "${suite.template}"`);
@@ -114,7 +114,23 @@ function loadSuite(path) {
       for (const problem of checkProblems(check, c.variables)) fail(`${checkWhere}: ${problem}`);
     }
   }
-  return { suite, template };
+  // Removing a case is a decision, so it has to be written down; a shrinking suite must never look like progress.
+  const retired = new Map();
+  if (suite.retired !== undefined && !Array.isArray(suite.retired)) fail('retired must be a list of { "id", "reason" } objects');
+  for (const [i, r] of (Array.isArray(suite.retired) ? suite.retired : []).entries()) {
+    const where = `retired case ${typeof r?.id === "string" ? `"${r.id}"` : `#${i + 1}`}`;
+    if (typeof r !== "object" || r === null) {
+      fail(`${where} must be an object`);
+      continue;
+    }
+    for (const key of Object.keys(r)) if (!["id", "reason"].includes(key)) fail(`${where}: unknown field "${key}"`);
+    if (!SLUG.test(r.id ?? "")) fail(`${where}: id must be a lowercase-kebab-case slug`);
+    if (caseIds.has(r.id)) fail(`${where}: id is still an active case`);
+    if (retired.has(r.id)) fail(`${where}: retired twice`);
+    if (typeof r.reason !== "string" || r.reason.trim().length < 10) fail(`${where}: reason must say why the case was removed`);
+    retired.set(r.id, r.reason);
+  }
+  return { suite, template, retired };
 }
 
 function checkRuns(suitePath, loaded) {
@@ -135,7 +151,7 @@ function checkRuns(suitePath, loaded) {
   for (const name of runs) checkRun(join(dir, name), loaded);
 }
 
-function checkRun(path, { suite, template }) {
+function checkRun(path, { suite, template, retired }) {
   const rel = relToEvals(path);
   const before = errors.length;
   const fail = (message) => errors.push(`${rel}: ${message}`);
@@ -175,7 +191,12 @@ function checkRun(path, { suite, template }) {
   } else {
     const seen = new Set();
     for (const recorded of run.cases) {
-      if (!suiteCaseIds.has(recorded?.id)) fail(`case "${recorded?.id}" is not in the suite; case ids must stay the same when a case is edited`);
+      if (!suiteCaseIds.has(recorded?.id) && !retired.has(recorded?.id)) {
+        fail(
+          `case "${recorded?.id}" is recorded but not in the suite, so it was renamed or removed; keep case ids the same ` +
+            `when editing a case, and list a removed case under "retired" with a reason`,
+        );
+      }
       if (seen.has(recorded?.id)) fail(`case "${recorded?.id}" is recorded twice`);
       seen.add(recorded?.id);
       const perSample =
@@ -206,6 +227,9 @@ function checkRun(path, { suite, template }) {
       for (const result of sample.checks.filter((r) => !r.pass)) lines.push(`    ✖ sample ${i + 1} ${result.name}: ${result.score.toFixed(result.precision)}`);
     });
   }
+  for (const recorded of run.cases.filter((c) => retired.has(c.id))) lines.push(`  ${recorded.id}: retired, not scored (${retired.get(recorded.id)})`);
+  const recordedIds = new Set(run.cases.map((c) => c.id));
+  for (const c of suite.cases.filter((c) => !recordedIds.has(c.id))) lines.push(`  ${c.id}: not recorded in this run`);
   report.push(lines.join("\n"));
 
   const scoresPath = path.replace(/\.json$/, ".scores.json");
@@ -223,19 +247,26 @@ function checkRun(path, { suite, template }) {
   const difference = firstDifference(stored, scores);
   if (difference) {
     fail(
-      `stored scores are out of date at ${describe(difference.path, scores)}: stored ${JSON.stringify(difference.stored)}, ` +
-        `recomputed ${JSON.stringify(difference.recomputed)}; if the change is intended, run with --write and commit the result`,
+      `stored scores are out of date at ${describe(difference.path, stored, scores)}: stored ${brief(difference.stored)}, ` +
+        `recomputed ${brief(difference.recomputed)}; if the change is intended, run with --write and commit the result`,
     );
   }
 }
 
-function describe(path, scores) {
-  const match = /^cases\[(\d+)\]\.samples\[(\d+)\]\.checks\[(\d+)\]\.?(.*)$/.exec(path);
+function describe(path, stored, recomputed) {
+  const match = /^cases\[(\d+)\](?:\.samples\[(\d+)\](?:\.checks\[(\d+)\])?)?\.?(.*)$/.exec(path);
   if (!match) return path;
-  const [, c, s, k, rest] = match.map((part, i) => (i > 0 && i < 4 ? Number(part) : part));
-  const scored = scores.cases[c];
-  const name = scored?.samples[s]?.checks[k]?.name ?? `#${k + 1}`;
-  return `case "${scored?.id}" sample ${s + 1} check "${name}"${rest ? ` ${rest}` : ""}`;
+  const [c, s, k] = match.slice(1, 4).map((part) => (part === undefined ? undefined : Number(part)));
+  const scored = recomputed.cases?.[c] ?? stored.cases?.[c];
+  let where = `case "${scored?.id}"`;
+  if (s !== undefined) where += ` sample ${s + 1}`;
+  if (k !== undefined) where += ` check "${scored?.samples?.[s]?.checks?.[k]?.name ?? `#${k + 1}`}"`;
+  return match[4] ? `${where} ${match[4]}` : where;
+}
+
+function brief(value) {
+  const text = JSON.stringify(value) ?? "nothing";
+  return text.length > 120 ? `${text.slice(0, 117)}...` : text;
 }
 
 if (!existsSync(EVALS) || !statSync(EVALS).isDirectory()) {

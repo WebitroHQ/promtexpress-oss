@@ -36,7 +36,9 @@ function withCopy(fn) {
 const INVALID = {
   "duplicate-case-id": "duplicate case id",
   "duplicate-check-name": "duplicate check name in this case",
-  "renamed-case": 'case "greets-ada" is not in the suite; case ids must stay the same',
+  "renamed-case": 'case "greets-ada" is recorded but not in the suite, so it was renamed or removed',
+  "removed-case": 'case "greets-bob" is recorded but not in the suite, so it was renamed or removed',
+  "retired-without-reason": 'retired case "greets-bob": reason must say why the case was removed',
   "stale-scores": "stored scores are out of date",
   "undeclared-variable": 'variable "audience" is not declared by the template',
   "outputs-not-per-sample": "one per sample",
@@ -123,6 +125,44 @@ describe("eval-library runner", () => {
       const { code, output } = runFixture(evals, templates);
       assert.equal(code, 1, output);
       assert.match(output, /case "greets-ada" sample 2 check "mentions-name" pass: stored false, recomputed true/);
+    }));
+
+  it("makes a shrinking suite loud, even when the removal is declared", () =>
+    withCopy((evals, templates) => {
+      const suitePath = join(evals, SUITE);
+      const runPath = join(evals, "text", "greeting", "recorded", "2026-09-15-fixture.json");
+      const suite = JSON.parse(readFileSync(suitePath, "utf8"));
+      const recorded = JSON.parse(readFileSync(runPath, "utf8"));
+      const bob = { id: "greets-bob", variables: { name: "Bob" }, checks: [{ name: "mentions-name", type: "contains-all", values: ["Bob"] }] };
+      writeFileSync(suitePath, JSON.stringify({ ...suite, cases: [...suite.cases, bob] }));
+      writeFileSync(runPath, JSON.stringify({ ...recorded, cases: [...recorded.cases, { id: "greets-bob", samples: [{ output: "Hello, Bob!" }] }] }));
+      assert.equal(runFixture(evals, templates, "--write").code, 0);
+
+      // Dropping the case silently fails.
+      writeFileSync(suitePath, JSON.stringify(suite));
+      assert.match(runFixture(evals, templates).output, /case "greets-bob" is recorded but not in the suite/);
+
+      // Declaring it retired still changes the stored scores, so the removal shows up in review.
+      writeFileSync(suitePath, JSON.stringify({ ...suite, retired: [{ id: "greets-bob", reason: "Duplicates greets-ada with a different name." }] }));
+      const stale = runFixture(evals, templates);
+      assert.equal(stale.code, 1, stale.output);
+      assert.match(stale.output, /stored scores are out of date at case "greets-bob": stored \{.*\}, recomputed nothing/);
+
+      assert.equal(runFixture(evals, templates, "--write").code, 0);
+      const { code, output } = runFixture(evals, templates);
+      assert.equal(code, 0, output);
+      assert.match(output, /greets-bob: retired, not scored \(Duplicates greets-ada with a different name\.\)/);
+    }));
+
+  it("reports suite cases that a run did not record", () =>
+    withCopy((evals, templates) => {
+      const path = join(evals, SUITE);
+      const suite = JSON.parse(readFileSync(path, "utf8"));
+      const grace = { id: "greets-grace", variables: { name: "Grace" }, checks: [{ name: "mentions-name", type: "contains-all", values: ["Grace"] }] };
+      writeFileSync(path, JSON.stringify({ ...suite, cases: [...suite.cases, grace] }));
+      const { code, output } = runFixture(evals, templates);
+      assert.equal(code, 0, output);
+      assert.match(output, /greets-grace: not recorded in this run/);
     }));
 
   it("fails when no suites are found", () => {

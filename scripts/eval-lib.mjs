@@ -4,7 +4,8 @@ import { createHash } from "node:crypto";
 export const FORMAT = 1;
 export const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-// Decimal places each check type reports its score with. Stored next to every score so no reader has to guess.
+// Decimal places each check type reports its score with, stored next to every score so no reader has to guess.
+// The rule for a new type: 0 when the score can only be 0 or 1, 2 when the score is a share. See library/evals/README.md.
 export const PRECISION = {
   "contains-all": 2,
   matches: 0,
@@ -130,7 +131,8 @@ export function scoreRun(suite, run) {
   return {
     format: FORMAT,
     run: run.id,
-    cases: run.cases.map((recorded) => {
+    // Retired cases stay in old recordings but are not scored; their absence from the scores is the visible change.
+    cases: run.cases.filter((recorded) => casesById.has(recorded.id)).map((recorded) => {
       const suiteCase = casesById.get(recorded.id);
       return {
         id: recorded.id,
