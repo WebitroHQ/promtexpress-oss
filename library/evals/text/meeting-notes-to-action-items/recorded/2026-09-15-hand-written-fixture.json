@@ -1,0 +1,39 @@
+{
+  "format": 1,
+  "id": "2026-09-15-hand-written-fixture",
+  "suite": "text/meeting-notes-to-action-items",
+  "recordedAt": "2026-09-15T00:00:00Z",
+  "note": "Hand-written outputs, including deliberately flawed samples, that prove the checks catch what they claim. Not produced by a model.",
+  "config": {
+    "provider": "fixture",
+    "model": "hand-written",
+    "temperature": null,
+    "maxTokens": null,
+    "templateVersion": "1.0.0",
+    "templateSha256": "603dd808bcfa72d60ac216fb3295ff515ba3f7fde26b1f23decf06d6b6622a64"
+  },
+  "cases": [
+    {
+      "id": "slipped-deadline-weekly-sync",
+      "samples": [
+        {
+          "output": "## Decisions\n- Landing page launch moves to Friday.\n\n## Action items\n| Action | Owner | Deadline | Source quote |\n|---|---|---|---|\n| Deliver landing page copy | Zeynep | Wednesday | \"Zeynep owns copy, says Wednesday\" |\n| Launch the landing page | Unassigned | Friday | \"landing page slips to Friday\" |\n| Bring two pricing options | Kerem | Next week | \"Kerem to bring two options next week\" |\n| Fix checkout analytics | Unassigned | No date | \"Analytics broken on checkout since Monday\" |\n\n## Open questions\n- Final pricing (Kerem is bringing options).\n\n## Risks\n- The Friday launch depends on copy arriving Wednesday.\n- Checkout analytics has been broken since Monday, so recent checkout data is missing."
+        },
+        {
+          "output": "## Decisions\n- Landing page launch moves to Friday.\n\n## Action items\n| Action | Owner | Deadline | Source quote |\n|---|---|---|---|\n| Deliver landing page copy | Zeynep | Wednesday | \"Zeynep owns copy, says Wednesday\" |\n| Launch the landing page | Ali | Friday | \"landing page slips to Friday\" |\n| Bring two pricing options | Kerem | Next week | \"Kerem to bring two options next week\" |\n| Fix checkout analytics | Ali | Monday | \"checkout tracking has been down since Monday\" |\n\n## Open questions\n- Final pricing.\n\n## Risks\n- Checkout data may be incomplete."
+        }
+      ]
+    },
+    {
+      "id": "nothing-decided-yet",
+      "samples": [
+        {
+          "output": "## Decisions\nNone recorded\n\n## Action items\n| Action | Owner | Deadline | Source quote |\n|---|---|---|---|\n| Decide whether to move the newsletter to Thursdays | Unassigned | No date | \"Mehmet wants to move it to Thursdays\" |\n| Assign an owner for the redesign | Unassigned | No date | \"Nobody owns the redesign yet\" |\n\n## Open questions\n- Should the newsletter move to Thursdays? Mehmet proposed it; Ayşe is unsure.\n\n## Risks\n- The redesign has no owner."
+        },
+        {
+          "output": "## Decisions\n- The newsletter moves to Thursdays.\n\n## Action items\n| Action | Owner | Deadline | Source quote |\n|---|---|---|---|\n| Draft the redesign | Mehmet | Thursday | \"Nobody owns the redesign yet\" |\n\n## Open questions\n- None.\n\n## Risks\n- None."
+        }
+      ]
+    }
+  ]
+}

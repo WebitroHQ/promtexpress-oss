@@ -1,0 +1,164 @@
+{
+  "format": 1,
+  "run": "2026-09-15-hand-written-fixture",
+  "cases": [
+    {
+      "id": "top-customers-2023-postgres",
+      "samples": [
+        {
+          "checks": [
+            {
+              "name": "has-required-sections",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "fenced-sql-block",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "no-select-star",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "limits-to-2023",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "requires-three-orders",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "join-has-comment",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            }
+          ]
+        },
+        {
+          "checks": [
+            {
+              "name": "has-required-sections",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "fenced-sql-block",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "no-select-star",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            },
+            {
+              "name": "limits-to-2023",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "requires-three-orders",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            },
+            {
+              "name": "join-has-comment",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "null-discount-as-zero-sqlite",
+      "samples": [
+        {
+          "checks": [
+            {
+              "name": "has-required-sections",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "fenced-sql-block",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "no-select-star",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "null-discount-counted-as-zero",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "no-postgres-only-syntax",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            }
+          ]
+        },
+        {
+          "checks": [
+            {
+              "name": "has-required-sections",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "fenced-sql-block",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "no-select-star",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "null-discount-counted-as-zero",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            },
+            {
+              "name": "no-postgres-only-syntax",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

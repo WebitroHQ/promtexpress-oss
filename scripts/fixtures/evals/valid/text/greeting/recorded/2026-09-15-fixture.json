@@ -1,0 +1,27 @@
+{
+  "format": 1,
+  "id": "2026-09-15-fixture",
+  "suite": "text/greeting",
+  "recordedAt": "2026-09-15T00:00:00Z",
+  "config": {
+    "provider": "fixture",
+    "model": "hand-written",
+    "temperature": null,
+    "maxTokens": null,
+    "templateVersion": "1.0.0",
+    "templateSha256": "117f22bc8eaac2fe56c394c8faa0dd04ac19cfb6e264df1d71e53293484e59bc"
+  },
+  "cases": [
+    {
+      "id": "greets-ada",
+      "samples": [
+        {
+          "output": "Hello, Ada!"
+        },
+        {
+          "output": "Hi there,\nfriend."
+        }
+      ]
+    }
+  ]
+}

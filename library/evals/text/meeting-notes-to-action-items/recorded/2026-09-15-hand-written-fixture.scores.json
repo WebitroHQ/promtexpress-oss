@@ -1,0 +1,128 @@
+{
+  "format": 1,
+  "run": "2026-09-15-hand-written-fixture",
+  "cases": [
+    {
+      "id": "slipped-deadline-weekly-sync",
+      "samples": [
+        {
+          "checks": [
+            {
+              "name": "has-all-sections",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "action-table-columns",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "source-quotes-come-from-notes",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "analytics-fix-left-unassigned",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            }
+          ]
+        },
+        {
+          "checks": [
+            {
+              "name": "has-all-sections",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "action-table-columns",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "source-quotes-come-from-notes",
+              "score": 0.75,
+              "precision": 2,
+              "pass": false
+            },
+            {
+              "name": "analytics-fix-left-unassigned",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nothing-decided-yet",
+      "samples": [
+        {
+          "checks": [
+            {
+              "name": "has-all-sections",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "decisions-none-recorded",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "no-invented-weekday-deadline",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "source-quotes-come-from-notes",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            }
+          ]
+        },
+        {
+          "checks": [
+            {
+              "name": "has-all-sections",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "decisions-none-recorded",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            },
+            {
+              "name": "no-invented-weekday-deadline",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            },
+            {
+              "name": "source-quotes-come-from-notes",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
