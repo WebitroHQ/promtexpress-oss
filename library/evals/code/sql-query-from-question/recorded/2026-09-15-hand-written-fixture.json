@@ -1,0 +1,39 @@
+{
+  "format": 1,
+  "id": "2026-09-15-hand-written-fixture",
+  "suite": "code/sql-query-from-question",
+  "recordedAt": "2026-09-15T00:00:00Z",
+  "note": "Hand-written outputs, including deliberately flawed samples, that prove the checks catch what they claim. Not produced by a model.",
+  "config": {
+    "provider": "fixture",
+    "model": "hand-written",
+    "temperature": null,
+    "maxTokens": null,
+    "templateVersion": "1.0.0",
+    "templateSha256": "34ea42d62fcf41568928aab9b871c157183f1466d765cdffb07910e37d863acd"
+  },
+  "cases": [
+    {
+      "id": "top-customers-2023-postgres",
+      "samples": [
+        {
+          "output": "**Assumptions**\n- \"Total spend\" is the sum of `orders.total_amount`.\n- \"In 2023\" means `order_date` from 2023-01-01 up to but not including 2024-01-01.\n- Orders with a NULL `total_amount` count as zero spend.\n\n**SQL Query**\n```sql\nSELECT\n    c.id,\n    c.name,\n    COUNT(o.id) AS order_count,\n    SUM(COALESCE(o.total_amount, 0)) AS total_spend\nFROM customers AS c\n-- each order belongs to one customer through orders.customer_id\nINNER JOIN orders AS o\n    ON o.customer_id = c.id\nWHERE o.order_date >= DATE '2023-01-01'\n  AND o.order_date < DATE '2024-01-01'\nGROUP BY c.id, c.name\nHAVING COUNT(o.id) >= 3\nORDER BY total_spend DESC\nLIMIT 5;\n```\n\n**Explanation**\nThe inner join keeps only customers with orders in 2023. COALESCE stops a missing total from turning a customer's sum into NULL, and HAVING applies the three-order minimum after grouping."
+        },
+        {
+          "output": "**Assumptions**\n- Spend is the order total.\n\n**SQL Query**\n```sql\nSELECT *\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nWHERE EXTRACT(YEAR FROM o.order_date) = 2023\nORDER BY o.total_amount DESC\nLIMIT 5;\n```\n\n**Explanation**\nJoins customers to their 2023 orders and keeps the five largest."
+        }
+      ]
+    },
+    {
+      "id": "null-discount-as-zero-sqlite",
+      "samples": [
+        {
+          "output": "**Assumptions**\n- \"Average discount per customer\" means the mean of `orders.discount` across each customer's orders.\n- Customers without any orders are left out, because they have no discount to average.\n\n**SQL Query**\n```sql\nSELECT\n    c.id,\n    c.name,\n    AVG(COALESCE(o.discount, 0)) AS average_discount\nFROM customers AS c\n-- orders.customer_id points at customers.id\nINNER JOIN orders AS o\n    ON o.customer_id = c.id\nGROUP BY c.id, c.name\nORDER BY average_discount DESC;\n```\n\n**Explanation**\nCOALESCE turns a missing discount into 0 before averaging, so orders without a discount pull the average down instead of being skipped by AVG."
+        },
+        {
+          "output": "**Assumptions**\n- Discounts are stored per order.\n\n**SQL Query**\n```sql\nSELECT c.id, c.name, AVG(o.discount)::REAL AS average_discount\nFROM customers c\n-- join each order to its customer\nJOIN orders o ON o.customer_id = c.id\nGROUP BY c.id, c.name;\n```\n\n**Explanation**\nAverages the discount for each customer."
+        }
+      ]
+    }
+  ]
+}

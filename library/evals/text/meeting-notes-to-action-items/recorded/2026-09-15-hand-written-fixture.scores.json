@@ -1,0 +1,144 @@
+{
+  "format": 1,
+  "run": "2026-09-15-hand-written-fixture",
+  "cases": [
+    {
+      "id": "slipped-deadline-weekly-sync",
+      "samples": [
+        {
+          "checks": [
+            {
+              "name": "has-all-sections",
+              "check": "63253cac6e70",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "action-table-columns",
+              "check": "cf95f412a64c",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "source-quotes-come-from-notes",
+              "check": "ad068c3d0bfd",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "analytics-fix-left-unassigned",
+              "check": "29e2ea952bad",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            }
+          ]
+        },
+        {
+          "checks": [
+            {
+              "name": "has-all-sections",
+              "check": "63253cac6e70",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "action-table-columns",
+              "check": "cf95f412a64c",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "source-quotes-come-from-notes",
+              "check": "ad068c3d0bfd",
+              "score": 0.75,
+              "precision": 2,
+              "pass": false
+            },
+            {
+              "name": "analytics-fix-left-unassigned",
+              "check": "29e2ea952bad",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nothing-decided-yet",
+      "samples": [
+        {
+          "checks": [
+            {
+              "name": "has-all-sections",
+              "check": "63253cac6e70",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "decisions-none-recorded",
+              "check": "e3679eef0b7f",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "no-invented-weekday-deadline",
+              "check": "2190a4f130ff",
+              "score": 1,
+              "precision": 0,
+              "pass": true
+            },
+            {
+              "name": "source-quotes-come-from-notes",
+              "check": "ad068c3d0bfd",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            }
+          ]
+        },
+        {
+          "checks": [
+            {
+              "name": "has-all-sections",
+              "check": "63253cac6e70",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            },
+            {
+              "name": "decisions-none-recorded",
+              "check": "e3679eef0b7f",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            },
+            {
+              "name": "no-invented-weekday-deadline",
+              "check": "2190a4f130ff",
+              "score": 0,
+              "precision": 0,
+              "pass": false
+            },
+            {
+              "name": "source-quotes-come-from-notes",
+              "check": "ad068c3d0bfd",
+              "score": 1,
+              "precision": 2,
+              "pass": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

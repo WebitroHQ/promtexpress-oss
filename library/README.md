@@ -54,6 +54,10 @@ node scripts/validate-library.mjs
 
 No install needed; it only uses Node.js.
 
+## Evals
+
+A template can also have an eval suite under [`evals/`](evals/README.md): fixed inputs with deterministic checks, re-scored in CI from recorded outputs without any API keys.
+
 ## What makes a template good
 
 - **It solves one job well.** "Studio product photo", not "any product image".

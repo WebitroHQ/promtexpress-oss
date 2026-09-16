@@ -1,0 +1,28 @@
+{
+  "format": 1,
+  "template": "text/greeting",
+  "samples": 3,
+  "cases": [
+    {
+      "id": "greets-ada",
+      "variables": {
+        "name": "Ada",
+        "audience": "developers"
+      },
+      "checks": [
+        {
+          "name": "mentions-name",
+          "type": "contains-all",
+          "values": [
+            "Ada"
+          ]
+        },
+        {
+          "name": "single-line",
+          "type": "not-matches",
+          "pattern": "\\n"
+        }
+      ]
+    }
+  ]
+}

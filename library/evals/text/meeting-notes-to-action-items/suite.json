@@ -1,0 +1,35 @@
+{
+  "format": 1,
+  "template": "text/meeting-notes-to-action-items",
+  "samples": 5,
+  "cases": [
+    {
+      "id": "slipped-deadline-weekly-sync",
+      "description": "A deadline slips, one blocker has no owner. The analytics fix must stay unassigned and every quote must come from the notes.",
+      "variables": {
+        "notes": "Ali: landing page slips to Friday, waiting on copy. Zeynep owns copy, says Wednesday. Pricing still undecided, Kerem to bring two options next week. Analytics broken on checkout since Monday.",
+        "team_context": "Weekly sync for the Q4 website relaunch"
+      },
+      "checks": [
+        { "name": "has-all-sections", "type": "contains-all", "values": ["## Decisions", "## Action items", "## Open questions", "## Risks"] },
+        { "name": "action-table-columns", "type": "matches", "pattern": "^\\|\\s*Action\\s*\\|\\s*Owner\\s*\\|\\s*Deadline\\s*\\|\\s*Source quote\\s*\\|", "flags": "im" },
+        { "name": "source-quotes-come-from-notes", "type": "table-column-in-variable", "column": "Source quote", "variable": "notes" },
+        { "name": "analytics-fix-left-unassigned", "type": "matches", "pattern": "^\\|[^\\n]*analytics[^\\n]*\\|\\s*Unassigned\\s*\\|", "flags": "im" }
+      ]
+    },
+    {
+      "id": "nothing-decided-yet",
+      "description": "An informal call where nothing was decided and nobody set a date. The model must not promote a proposal to a decision or invent a deadline.",
+      "variables": {
+        "notes": "Quick call about the newsletter. Mehmet wants to move it to Thursdays, Ayşe isn't sure it matters. Nobody owns the redesign yet. We'll check in again once there's a draft.",
+        "team_context": "Two-person marketing team, informal call"
+      },
+      "checks": [
+        { "name": "has-all-sections", "type": "contains-all", "values": ["## Decisions", "## Action items", "## Open questions", "## Risks"] },
+        { "name": "decisions-none-recorded", "type": "matches", "pattern": "##\\s*Decisions\\s*\\n+\\s*(?:[-*]\\s*)?None recorded", "flags": "i" },
+        { "name": "no-invented-weekday-deadline", "type": "not-matches", "pattern": "\\|\\s*(?:mon|tues|wednes|thurs|fri|satur|sun)day\\s*\\|", "flags": "i" },
+        { "name": "source-quotes-come-from-notes", "type": "table-column-in-variable", "column": "Source quote", "variable": "notes" }
+      ]
+    }
+  ]
+}

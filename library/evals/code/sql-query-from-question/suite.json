@@ -1,0 +1,40 @@
+{
+  "format": 1,
+  "template": "code/sql-query-from-question",
+  "samples": 5,
+  "cases": [
+    {
+      "id": "top-customers-2023-postgres",
+      "description": "The template's own example: aggregation with a HAVING filter, a date range and a commented join.",
+      "variables": {
+        "question": "Find the top 5 customers by total spend in 2023 who have placed at least 3 orders.",
+        "schema": "CREATE TABLE customers (id INT PRIMARY KEY, name VARCHAR(100));\nCREATE TABLE orders (id INT PRIMARY KEY, customer_id INT, order_date DATE, total_amount DECIMAL(10,2));",
+        "dialect": "PostgreSQL"
+      },
+      "checks": [
+        { "name": "has-required-sections", "type": "contains-all", "values": ["Assumptions", "SQL Query", "Explanation"] },
+        { "name": "fenced-sql-block", "type": "matches", "pattern": "```sql\\s*\\n[\\s\\S]+?```", "flags": "i" },
+        { "name": "no-select-star", "type": "not-matches", "pattern": "SELECT\\s+\\*", "flags": "i" },
+        { "name": "limits-to-2023", "type": "matches", "pattern": "2023" },
+        { "name": "requires-three-orders", "type": "matches", "pattern": "HAVING\\s+COUNT\\s*\\([^)]*\\)\\s*>=\\s*3", "flags": "i" },
+        { "name": "join-has-comment", "type": "matches", "pattern": "--[^\\n]*\\n\\s*(?:(?:INNER|LEFT|RIGHT|FULL)(?:\\s+OUTER)?\\s+)?JOIN|JOIN[^\\n]*--", "flags": "i" }
+      ]
+    },
+    {
+      "id": "null-discount-as-zero-sqlite",
+      "description": "A nullable column the question says to treat as zero, in a dialect without PostgreSQL syntax.",
+      "variables": {
+        "question": "What is the average discount per customer? Orders without a discount count as zero.",
+        "schema": "CREATE TABLE customers (id INTEGER PRIMARY KEY, name TEXT NOT NULL);\nCREATE TABLE orders (id INTEGER PRIMARY KEY, customer_id INTEGER NOT NULL REFERENCES customers(id), total REAL NOT NULL, discount REAL);",
+        "dialect": "SQLite"
+      },
+      "checks": [
+        { "name": "has-required-sections", "type": "contains-all", "values": ["Assumptions", "SQL Query", "Explanation"] },
+        { "name": "fenced-sql-block", "type": "matches", "pattern": "```sql\\s*\\n[\\s\\S]+?```", "flags": "i" },
+        { "name": "no-select-star", "type": "not-matches", "pattern": "SELECT\\s+\\*", "flags": "i" },
+        { "name": "null-discount-counted-as-zero", "type": "matches", "pattern": "(?:COALESCE|IFNULL)\\s*\\(\\s*(?:\\w+\\.)?discount\\s*,\\s*0(?:\\.0+)?\\s*\\)", "flags": "i" },
+        { "name": "no-postgres-only-syntax", "type": "not-matches", "pattern": "::|\\bILIKE\\b|\\bDATE_TRUNC\\b", "flags": "i" }
+      ]
+    }
+  ]
+}
