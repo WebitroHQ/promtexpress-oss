@@ -26,6 +26,14 @@ const RETIRED_COMMERCIAL_PAGES = [
   { source: "/pricing", destination: "/", permanent: false },
   { source: "/billing", destination: "/settings#ai-keys", permanent: false },
   { source: "/checkout-success", destination: "/dashboard", permanent: false },
+  { source: "/pr/yonet/live", destination: "/pr/yonet", permanent: false },
+  { source: "/pr/yonet/billing/:path*", destination: "/pr/yonet", permanent: false },
+  { source: "/pr/yonet/plans", destination: "/pr/yonet", permanent: false },
+  { source: "/pr/yonet/welcome-credit", destination: "/pr/yonet", permanent: false },
+  { source: "/pr/yonet/embedding-engines", destination: "/pr/yonet", permanent: false },
+  { source: "/pr/yonet/i18n", destination: "/pr/yonet", permanent: false },
+  { source: "/pr/yonet/users/:id/billing", destination: "/pr/yonet/users", permanent: false },
+  { source: "/pr/yonet/users/:id/credits", destination: "/pr/yonet/users", permanent: false },
 ];
 
 const nextConfig: NextConfig = {

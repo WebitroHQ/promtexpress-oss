@@ -54,8 +54,8 @@ const ROLE_DESCRIPTIONS: Record<RoleData["roleSlug"], { title: string; desc: str
   },
   EMBEDDER: {
     title: "Embedder",
-    desc: "PromptExemplar embedding generation for RAG. Managed on the /pr/yonet/embedding-engines page (isDefault=true).",
-    recommended: "OpenAI text-embedding-3-small (1536 dim) recommended. No setting here — use the Embedding Engines page.",
+    desc: "Not used: library search runs on Postgres full-text search and needs no embedding model.",
+    recommended: "Nothing to assign.",
   },
   DISTILLER: {
     title: "Distiller",
@@ -188,13 +188,7 @@ function RoleCard({ role, engines }: { role: RoleData; engines: EngineOption[] }
 
         {isEmbedder ? (
           <div className="mt-4 rounded-md border border-dashed border-primary/40 bg-primary/5 p-3 text-sm text-text-muted">
-            Engine assignment for this role is not done here. Embedding models are managed in a separate table ({" "}
-            <code>EmbeddingEngine</code>). {" "}
-            <a href="/pr/yonet/embedding-engines" className="text-primary hover:underline font-medium">
-              Go to Embedding Engines page →
-            </a>{" "}
-            and toggle <strong>isDefault</strong> + <strong>isActive</strong> on the model you want.
-            RAG will use that &quot;default&quot; embedder.
+            This role is not used. Library search runs on Postgres full-text search, so no embedding model is needed.
           </div>
         ) : (
         <div className="grid grid-cols-[1fr_auto] gap-3 items-end mt-4">

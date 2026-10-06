@@ -1,11 +1,10 @@
 import Link from "next/link";
 import {
-  LayoutDashboard, Users, CreditCard, FileText, Cpu, GitBranch,
-  FolderTree, BookOpen, Globe, Mail, BarChart3, ShieldAlert,
-  Network, Settings, ScrollText, Target, HelpCircle, Database, Upload, Layers, SlidersHorizontal,
+  LayoutDashboard, Users, FileText, Cpu, GitBranch,
+  FolderTree, BookOpen, Mail, BarChart3, ShieldAlert,
+  Network, Settings, ScrollText, Target, HelpCircle, Database, Upload, SlidersHorizontal,
   Bot, Scroll, UserCircle2, AlertOctagon, GraduationCap, Activity,
-  Receipt, Webhook, Package,
-} from "lucide-react";
+  } from "lucide-react";
 import { Logo } from "@/components/feature/layout/logo";
 
 const BASE = "/pr/yonet";
@@ -15,48 +14,29 @@ export const ADMIN_NAV = [
     group: "Overview",
     items: [
       { href: BASE, label: "Dashboard", icon: LayoutDashboard, id: "dashboard" },
-      { href: `${BASE}/live`, label: "Live stats", icon: Activity, id: "live" },
+      { href: `${BASE}/analytics`, label: "Analytics", icon: BarChart3, id: "analytics" },
     ],
   },
   {
-    group: "Users & Plans",
+    group: "Community",
     items: [
       { href: `${BASE}/users`, label: "Users", icon: Users, id: "users" },
-      { href: `${BASE}/plans`, label: "Plans & Pricing", icon: CreditCard, id: "plans" },
+      { href: `${BASE}/feedback`, label: "Feedback", icon: Mail, id: "feedback" },
+      { href: `${BASE}/abuse`, label: "Abuse & Reports", icon: ShieldAlert, id: "abuse" },
     ],
   },
   {
-    group: "Billing",
-    items: [
-      { href: `${BASE}/billing`, label: "Overview", icon: BarChart3, id: "billing" },
-      { href: `${BASE}/billing/transactions`, label: "Transactions", icon: Receipt, id: "billing-transactions" },
-      { href: `${BASE}/billing/webhook-events`, label: "Webhook Events", icon: Webhook, id: "billing-webhook-events" },
-      { href: `${BASE}/billing/credit-audit`, label: "Credit Audit", icon: ScrollText, id: "billing-credit-audit" },
-      { href: `${BASE}/billing/packs`, label: "Pack purchases", icon: Package, id: "billing-packs" },
-    ],
-  },
-  {
-    group: "v4 Engine ⭐",
+    group: "Prompt engine",
     items: [
       { href: `${BASE}/agent-roles`, label: "Agent Roles", icon: Bot, id: "agent-roles" },
       { href: `${BASE}/constitution`, label: "Constitution", icon: Scroll, id: "constitution" },
       { href: `${BASE}/personas`, label: "Expert Personas", icon: UserCircle2, id: "personas" },
       { href: `${BASE}/antipatterns`, label: "Anti-Patterns", icon: AlertOctagon, id: "antipatterns" },
-      { href: `${BASE}/training/resources`, label: "Training Resources", icon: GraduationCap, id: "training" },
-      { href: `${BASE}/training/distillations`, label: "Distillation Queue", icon: GraduationCap, id: "training" },
+      { href: `${BASE}/target-engines`, label: "Target AIs", icon: Target, id: "target-engines" },
+      { href: `${BASE}/mapping`, label: "Modality Mapping", icon: GitBranch, id: "mapping" },
+      { href: `${BASE}/engines`, label: "AI Engines", icon: Cpu, id: "engines" },
       { href: `${BASE}/traces`, label: "Generation Traces", icon: Activity, id: "traces" },
       { href: `${BASE}/observability`, label: "Observability", icon: Activity, id: "observability" },
-    ],
-  },
-  {
-    group: "Engine (legacy + target)",
-    items: [
-      { href: `${BASE}/engines`, label: "AI Engines", icon: Cpu, id: "engines" },
-      { href: `${BASE}/mapping`, label: "Modality Mapping", icon: GitBranch, id: "mapping" },
-      { href: `${BASE}/target-engines`, label: "Target AIs", icon: Target, id: "target-engines" },
-      { href: `${BASE}/templates`, label: "Templates (legacy v1)", icon: FileText, id: "templates" },
-      { href: `${BASE}/questions`, label: "Questions (legacy v1)", icon: HelpCircle, id: "questions" },
-      { href: `${BASE}/taxonomy`, label: "Taxonomy", icon: FolderTree, id: "taxonomy" },
     ],
   },
   {
@@ -64,28 +44,32 @@ export const ADMIN_NAV = [
     items: [
       { href: `${BASE}/library`, label: "Prompt Library", icon: Database, id: "library" },
       { href: `${BASE}/library/import`, label: "Import", icon: Upload, id: "library-import" },
-      { href: `${BASE}/embedding-engines`, label: "Embedding Engines", icon: Layers, id: "embedding-engines" },
       { href: `${BASE}/library/settings`, label: "Library AI", icon: SlidersHorizontal, id: "library-settings" },
+      { href: `${BASE}/taxonomy`, label: "Taxonomy", icon: FolderTree, id: "taxonomy" },
+      { href: `${BASE}/training/resources`, label: "Training Resources", icon: GraduationCap, id: "training" },
+      { href: `${BASE}/training/distillations`, label: "Distillation Queue", icon: GraduationCap, id: "training" },
     ],
   },
   {
     group: "Content",
     items: [
       { href: `${BASE}/blog`, label: "Blog", icon: BookOpen, id: "blog" },
-      { href: `${BASE}/i18n`, label: "Languages", icon: Globe, id: "i18n" },
       { href: `${BASE}/emails`, label: "Emails", icon: Mail, id: "emails" },
     ],
   },
   {
     group: "System",
     items: [
-      { href: `${BASE}/analytics`, label: "Analytics", icon: BarChart3, id: "analytics" },
-      { href: `${BASE}/feedback`, label: "Feedback", icon: Mail, id: "feedback" },
-      { href: `${BASE}/abuse`, label: "Abuse & Reports", icon: ShieldAlert, id: "abuse" },
       { href: `${BASE}/api`, label: "API Logs", icon: Network, id: "api" },
       { href: `${BASE}/system-settings`, label: "Settings", icon: Settings, id: "system-settings" },
-      { href: `${BASE}/welcome-credit`, label: "Welcome Credit", icon: Settings, id: "welcome-credit" },
       { href: `${BASE}/audit`, label: "Audit Log", icon: ScrollText, id: "audit" },
+    ],
+  },
+  {
+    group: "Legacy",
+    items: [
+      { href: `${BASE}/templates`, label: "Templates (v1)", icon: FileText, id: "templates" },
+      { href: `${BASE}/questions`, label: "Questions (v1)", icon: HelpCircle, id: "questions" },
     ],
   },
 ];

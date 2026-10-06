@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   suspendUser,
   unsuspendUser,
-  changeUserPlan,
   inviteUser,
   deleteUser,
 } from "@/server/actions/admin-users";
@@ -16,34 +15,29 @@ type UserRow = {
   id: string;
   name: string;
   email: string;
-  plan: string;
-  credits: number;
+  aiKey: string | null;
+  prompts: number;
   joined: string;
   status: "Active" | "Suspended";
   country: string;
   suspendReason: string | null;
 };
 
-type PlanOption = { id: string; name: string };
-
 interface Props {
   users: UserRow[];
   totalUsers: number;
-  plans: PlanOption[];
 }
 
 function initials(name: string): string {
   return name.split(" ").map((s) => s[0]).filter(Boolean).join("").slice(0, 2).toUpperCase();
 }
 
-export function UsersTableClient({ users, totalUsers, plans }: Props) {
+export function UsersTableClient({ users, totalUsers }: Props) {
   const [filter, setFilter] = React.useState<"All" | "Active" | "Suspended">("All");
   const [search, setSearch] = React.useState("");
   const [busy, setBusy] = React.useState<string | null>(null);
   const [openMenu, setOpenMenu] = React.useState<string | null>(null);
   const [showInvite, setShowInvite] = React.useState(false);
-  const [changingPlanFor, setChangingPlanFor] = React.useState<string | null>(null);
-  const [selectedPlanId, setSelectedPlanId] = React.useState<string>("");
 
   const filtered = users.filter((u) => {
     if (filter !== "All" && u.status !== filter) return false;
@@ -80,25 +74,6 @@ export function UsersTableClient({ users, totalUsers, plans }: Props) {
     }
   }
 
-  function openChangePlan(id: string) {
-    setSelectedPlanId(plans[0]?.id ?? "");
-    setChangingPlanFor(id);
-    setOpenMenu(null);
-  }
-
-  async function submitChangePlan() {
-    if (!changingPlanFor || !selectedPlanId) return;
-    setBusy(changingPlanFor);
-    try {
-      await changeUserPlan({ userId: changingPlanFor, planId: selectedPlanId });
-      setChangingPlanFor(null);
-    } catch (e) {
-      window.alert((e as Error).message);
-    } finally {
-      setBusy(null);
-    }
-  }
-
   async function handleDelete(id: string, email: string) {
     if (!window.confirm(`Permanently delete user ${email}?`)) return;
     setBusy(id);
@@ -127,9 +102,9 @@ export function UsersTableClient({ users, totalUsers, plans }: Props) {
   }
 
   function exportCsv() {
-    const header = ["Name", "Email", "Plan", "Country", "Joined", "Status"].join(",");
+    const header = ["Name", "Email", "AI key", "Prompts", "Country", "Joined", "Status"].join(",");
     const rows = filtered.map((u) =>
-      [u.name, u.email, u.plan, u.country, u.joined, u.status].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","),
+      [u.name, u.email, u.aiKey ?? "none", u.prompts, u.country, u.joined, u.status].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","),
     );
     const blob = new Blob([[header, ...rows].join("\n")], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -181,7 +156,7 @@ export function UsersTableClient({ users, totalUsers, plans }: Props) {
         <table className="w-full text-sm min-w-[640px]">
           <thead>
             <tr className="bg-surface-2 border-b border-border">
-              {["User", "Plan", "Credits", "Country", "Joined", "Status", ""].map((h, i) => (
+              {["User", "AI key", "Prompts", "Country", "Joined", "Status", ""].map((h, i) => (
                 <th key={i} className="px-4 py-3 text-left font-medium text-text-muted">{h}</th>
               ))}
             </tr>
@@ -201,9 +176,9 @@ export function UsersTableClient({ users, totalUsers, plans }: Props) {
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  <Badge variant={u.plan === "Pro" || u.plan === "Enterprise" ? "primary" : "default"}>{u.plan}</Badge>
+                  {u.aiKey ? <Badge variant="primary">{u.aiKey}</Badge> : <span className="text-text-faint">none</span>}
                 </td>
-                <td className="px-4 py-3 tabular-nums text-text-muted">{u.credits.toLocaleString()}</td>
+                <td className="px-4 py-3 tabular-nums text-text-muted">{u.prompts.toLocaleString()}</td>
                 <td className="px-4 py-3 text-text-muted">{u.country}</td>
                 <td className="px-4 py-3 text-text-muted">{u.joined}</td>
                 <td className="px-4 py-3">
@@ -221,8 +196,6 @@ export function UsersTableClient({ users, totalUsers, plans }: Props) {
                   </button>
                   {openMenu === u.id && (
                     <div className="absolute right-2 top-9 z-10 bg-surface border border-border rounded-md shadow-lg w-44 py-1">
-                      <button onClick={() => openChangePlan(u.id)} className="w-full text-left px-3 py-1.5 text-sm hover:bg-surface-2">Change plan…</button>
-                      <a href={`/pr/yonet/users/${u.id}/credits`} className="block w-full text-left px-3 py-1.5 text-sm hover:bg-surface-2">Credits…</a>
                       {u.status === "Active" ? (
                         <button onClick={() => handleSuspend(u.id)} className="w-full text-left px-3 py-1.5 text-sm hover:bg-surface-2">Suspend…</button>
                       ) : (
@@ -262,34 +235,6 @@ export function UsersTableClient({ users, totalUsers, plans }: Props) {
         </div>
       )}
 
-      {changingPlanFor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay" onClick={() => setChangingPlanFor(null)}>
-          <div onClick={(e) => e.stopPropagation()} className="bg-surface border border-border rounded-xl p-5 w-[360px]">
-            <h3 className="font-semibold mb-3">Change plan</h3>
-            <label className="block text-xs text-text-muted mb-1">New plan</label>
-            <select
-              className="w-full h-9 rounded-md border border-border bg-surface px-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-primary/40"
-              value={selectedPlanId}
-              onChange={(e) => setSelectedPlanId(e.target.value)}
-            >
-              {plans.map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-            </select>
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="secondary" size="sm" onClick={() => setChangingPlanFor(null)}>Cancel</Button>
-              <Button
-                type="button"
-                size="sm"
-                disabled={!selectedPlanId || busy === changingPlanFor}
-                onClick={submitChangePlan}
-              >
-                {busy === changingPlanFor ? "Saving…" : "Save"}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

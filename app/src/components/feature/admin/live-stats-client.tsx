@@ -134,6 +134,9 @@ export function LiveStatsClient({ initial }: { initial: LiveStats }) {
           <strong className="tabular-nums">{nf.format(stats.onlineNow)}</strong> on the site right now
           <span className="text-text-faint">(last 5 minutes)</span>
         </span>
+        <a href="/pr/yonet/feedback" className="text-sm text-primary hover:underline">
+          <strong className="tabular-nums">{nf.format(stats.newFeedback)}</strong> new feedback
+        </a>
         <span className="text-xs text-text-faint ml-auto">
           {error
             ? `Could not refresh: ${error}. Showing data from ${new Date(stats.generatedAt).toLocaleTimeString("en-GB")}`

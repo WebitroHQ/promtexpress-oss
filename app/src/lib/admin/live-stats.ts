@@ -30,6 +30,8 @@ export interface DailyPoint {
 export interface LiveStats {
   generatedAt: string;
   onlineNow: number;
+  /** Feedback messages nobody has read yet. */
+  newFeedback: number;
   visitors: PeriodCounts;
   pageViews: PeriodCounts;
   signups: PeriodCounts;
@@ -102,6 +104,7 @@ export async function getLiveStats(): Promise<LiveStats> {
     topPages,
     topReferrers,
     recentSignups,
+    newFeedback,
   ] = await Promise.all([
     periodCounts("PageView", VISITOR),
     periodCounts("PageView", "count(*)"),
@@ -163,11 +166,13 @@ export async function getLiveStats(): Promise<LiveStats> {
       WHERE "createdAt" >= (now() AT TIME ZONE 'UTC') - interval '30 days' AND "referrer" IS NOT NULL AND "referrer" <> ''
       GROUP BY "referrer" ORDER BY visitors DESC LIMIT 8`),
     db.user.findMany({ orderBy: { createdAt: "desc" }, take: 6, select: { email: true, createdAt: true } }),
+    db.feedback.count({ where: { status: "NEW" } }),
   ]);
 
   return {
     generatedAt: new Date().toISOString(),
     onlineNow: num(online[0]?.n),
+    newFeedback,
     visitors,
     pageViews,
     signups,
