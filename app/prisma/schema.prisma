@@ -58,6 +58,7 @@ model User {
   creditLedger        CreditLedger[]
   apiKeys             ApiKey[]
   aiKeys              UserAiKey[]
+  feedback            Feedback[]
   subscription        Subscription?
   blogPosts           BlogPost[]
   abuseReports        AbuseReport[]             @relation("AbuseReporter")
@@ -381,6 +382,22 @@ model ApiKey {
 // ──────────────────────────────────────────────────────
 // AI Engine management (admin-controlled)
 // ──────────────────────────────────────────────────────
+
+/// Feedback sent by a signed-in user; admins read it at /pr/yonet/feedback.
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String
+  category  String   @default("other") // bug | idea | other
+  message   String   @db.Text
+  status    String   @default("NEW") // NEW | READ | DONE
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([userId, createdAt(sort: Desc)])
+}
 
 /// A user's own AI provider key (bring-your-own-key). Generation runs on the active one.
 model UserAiKey {

@@ -12,6 +12,7 @@ import {
   CreditCard,
   Key,
   Settings,
+  MessageSquare,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Logo } from "./logo";
@@ -28,6 +29,7 @@ const MAIN_LINKS = [
 const ACCOUNT_LINKS = [
   { href: "/api-keys", label: "API Keys", icon: Key },
   { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/feedback", label: "Feedback", icon: MessageSquare },
 ];
 
 export function AppSidebarDrawer() {

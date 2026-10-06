@@ -11,6 +11,7 @@ import {
   CreditCard,
   Key,
   Settings,
+  MessageSquare,
 } from "lucide-react";
 import { Logo } from "./logo";
 import { cn } from "@/lib/utils";
@@ -33,6 +34,7 @@ const MAIN_LINKS: SideLink[] = [
 const ACCOUNT_LINKS: SideLink[] = [
   { href: "/api-keys", label: "API Keys", icon: Key },
   { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/feedback", label: "Feedback", icon: MessageSquare },
 ];
 
 interface AppSidebarProps {

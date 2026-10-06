@@ -2,7 +2,7 @@
 -- Idempotent: ON CONFLICT updates instead of insert duplication.
 --
 -- Apply on server with:
---   docker exec -i promtexpress-postgres psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" < prisma/seed.sql
+--   docker exec -i promtexpress-postgres psql -U $POSTGRES_USER -d $POSTGRES_DB < prisma/seed.sql
 --
 -- Mirrors prisma/seed.ts (used in dev with `pnpm db:seed`).
 

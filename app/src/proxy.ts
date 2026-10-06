@@ -20,6 +20,7 @@ const protectedRoutes = [
   "/api-keys",
   "/history",
   "/favorites",
+  "/feedback",
   "/billing",
   "/pr/yonet",
 ];

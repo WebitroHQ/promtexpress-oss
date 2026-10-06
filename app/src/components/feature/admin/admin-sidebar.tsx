@@ -80,6 +80,7 @@ export const ADMIN_NAV = [
     group: "System",
     items: [
       { href: `${BASE}/analytics`, label: "Analytics", icon: BarChart3, id: "analytics" },
+      { href: `${BASE}/feedback`, label: "Feedback", icon: Mail, id: "feedback" },
       { href: `${BASE}/abuse`, label: "Abuse & Reports", icon: ShieldAlert, id: "abuse" },
       { href: `${BASE}/api`, label: "API Logs", icon: Network, id: "api" },
       { href: `${BASE}/system-settings`, label: "Settings", icon: Settings, id: "system-settings" },
