@@ -26,15 +26,12 @@ export const renderLandingHtmlTop = (isAuth: boolean) => String.raw`
       <span>promt<span class="ex">Express</span></span>
     </a>
     <div class="nav-links">
-      <a href="#problem">Product
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </a>
       <a href="#problem">How it Works</a>
       <a href="#templates">Templates</a>
+      <a href="#models">Models</a>
+      <a href="#faq">FAQ</a>
       <a href="https://github.com/WebitroHQ/promtexpress-oss" target="_blank" rel="noopener">GitHub</a>
-      <a href="#faq">Resources
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </a>
+      <a href="/feedback">Feedback</a>
     </div>
     <div class="nav-right">
       <button class="menu-trigger" id="menuTrigger" aria-label="Open menu" aria-expanded="false" aria-controls="menuOverlay">
@@ -69,6 +66,7 @@ export const renderLandingHtmlTop = (isAuth: boolean) => String.raw`
     <a href="#models" data-menu-link>Models <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
     <a href="#faq" data-menu-link>FAQ <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
     <a href="https://github.com/WebitroHQ/promtexpress-oss" target="_blank" rel="noopener" data-menu-link>GitHub <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+    <a href="/feedback" data-menu-link>Feedback <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
   </nav>
   <div class="menu-cta">
     <div id="lv3-lang-slot-mobile" class="lv3-lang-slot-mobile"></div>
