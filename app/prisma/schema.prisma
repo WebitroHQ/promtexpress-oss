@@ -1,0 +1,1180 @@
+// promtexpress Prisma schema
+// DB: PostgreSQL (Docker container: promtexpress-postgres, port 5434)
+// Multi-tenant: B2C — every user-scoped table has userId + RLS
+
+generator client {
+  provider        = "prisma-client-js"
+  // native = local dev (darwin-arm64). Prod server: AlmaLinux 8 with OpenSSL 1.1.1k → rhel-openssl-1.1.x.
+  // Adding 1.0.x and 3.0.x as future-proofing for OpenSSL upgrades.
+  binaryTargets   = ["native", "rhel-openssl-1.0.x", "rhel-openssl-1.1.x", "rhel-openssl-3.0.x"]
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [vector(map: "vector")]
+}
+
+// ──────────────────────────────────────────────────────
+// Auth (NextAuth v5 compatible)
+// ──────────────────────────────────────────────────────
+
+model User {
+  id                     String    @id @default(cuid())
+  email                  String    @unique
+  emailVerified          DateTime?
+  name                   String?
+  firstName              String?
+  lastName               String?
+  country                String? // ISO 3166-1 alpha-2
+  phone                  String?
+  passwordHash           String? // bcrypt; null for OAuth-only users
+  passwordResetToken     String?   @unique // SHA-256 hash of raw token
+  passwordResetExpiresAt DateTime?
+  image                  String?
+  role                   UserRole  @default(USER)
+  locale                 String    @default("en")
+  suspendedAt            DateTime?
+  suspendReason          String?
+  onboardingCompletedAt  DateTime?
+  onboardingStepIndex    Int       @default(0)
+  // Plan 2026-05-08 step 3 — KVKK Art.5 explicit consent + ToS acceptance.
+  // Nullable so existing users are not broken; consent-update-modal collects
+  // these on next login for legacy accounts.
+  termsConsentAt         DateTime?
+  kvkkConsentAt          DateTime?
+  // Plan 2026-05-08 step 4 — Brevo bounce/complaint flag.
+  // Values: 'ok' | 'soft_bounce' | 'hard_bounce' | 'complained' | 'unsubscribed' | 'invalid_email'
+  // template-send.ts blocks transactional sends when 'hard_bounce' / 'complained' / 'invalid_email'.
+  emailDeliveryStatus    String    @default("ok")
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  accounts            Account[]
+  sessions            Session[]
+  prompts             Prompt[]
+  creditLedger        CreditLedger[]
+  apiKeys             ApiKey[]
+  aiKeys              UserAiKey[]
+  subscription        Subscription?
+  blogPosts           BlogPost[]
+  abuseReports        AbuseReport[]             @relation("AbuseReporter")
+  auditEntries        AuditLog[]                @relation("AuditActor")
+  apiCallLogs         ApiCallLog[]              @relation("ApiLogUser")
+  signupSignal        SignupSignal?
+  pageViews           PageView[]                @relation("PageViewUser")
+  analyticsEvents     AnalyticsEvent[]          @relation("AnalyticsEventUser")
+  paddleCustomer      PaddleCustomer?
+  paddleTransactions  PaddleTransaction[]
+  creditPackPurchases ExtraCreditPackPurchase[]
+
+  @@index([email])
+  @@index([suspendedAt])
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ──────────────────────────────────────────────────────
+// Core product
+// ──────────────────────────────────────────────────────
+
+model Prompt {
+  id                  String   @id @default(cuid())
+  userId              String
+  templateId          String?
+  targetEngineId      String?
+  title               String?
+  userInput           String   @db.Text
+  result              String?  @db.Text
+  engine              String
+  modality            String   @default("text")
+  language            String   @default("en")
+  creditsUsed         Int      @default(0)
+  isFavorited         Boolean  @default(false)
+  tags                String[]
+  answers             Json     @default("[]")
+  validationScore     Int?
+  validationNotes     Json?
+  wasTeaserAtCreation Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template     PromptTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  targetEngine TargetEngine?   @relation(fields: [targetEngineId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([templateId])
+  @@index([templateId, createdAt(sort: Desc)])
+  @@index([targetEngineId])
+}
+
+// ──────────────────────────────────────────────────────
+// Credits & billing
+// ──────────────────────────────────────────────────────
+
+model Plan {
+  id             String   @id @default(cuid())
+  name           String   @unique
+  slug           String   @unique
+  monthlyCredits Int
+  priceMonthly   Decimal  @db.Decimal(10, 2)
+  priceYearly    Decimal  @db.Decimal(10, 2)
+  features       Json     @default("[]")
+  isActive       Boolean  @default(true)
+  featured       Boolean  @default(false)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  iterationCostMultiplier Decimal @default(1.0) @db.Decimal(3, 2)
+  iterationFreeCount      Int     @default(0)
+  maxIterationsPerPrompt  Int?
+
+  // Paddle product catalog mapping (set after products are created in Paddle dashboard).
+  paddleProductId      String?
+  paddlePriceIdMonthly String?
+  paddlePriceIdYearly  String?
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  planId             String
+  status             SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean            @default(false)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  // Paddle linkage (null for legacy/admin-granted subscriptions).
+  paddleSubscriptionId String?      @unique
+  paddleCustomerId     String?
+  paddlePriceId        String?
+  billingCycle         BillingCycle @default(MONTHLY)
+  seatCount            Int          @default(1)
+  pausedAt             DateTime?
+  resumesAt            DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id])
+
+  @@index([userId])
+  @@index([paddleCustomerId])
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+  PAUSED
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+}
+
+model CreditLedger {
+  id             String       @id @default(cuid())
+  userId         String
+  delta          Int
+  reason         CreditReason
+  meta           Json?
+  createdAt      DateTime     @default(now())
+  expiresAt      DateTime?
+  consumed       Boolean      @default(false)
+  consumedAt     DateTime?
+  consumedAmount Int          @default(0)
+  packPurchaseId String?
+
+  user         User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packPurchase ExtraCreditPackPurchase? @relation(fields: [packPurchaseId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, consumed, expiresAt])
+}
+
+enum CreditReason {
+  SUBSCRIPTION_RENEWAL
+  SUBSCRIPTION_GRANT
+  SUBSCRIPTION_EXPIRY
+  PROMPT_GENERATION
+  ADMIN_ADJUSTMENT
+  BONUS
+  REFUND
+  API_USAGE
+  WELCOME_GRANT
+  EXTRA_PACK_PURCHASE
+  EXTRA_PACK_DEBIT
+  EXTRA_PACK_EXPIRY
+}
+
+// ──────────────────────────────────────────────────────
+// Paddle billing integration
+// ──────────────────────────────────────────────────────
+
+model PaddleCustomer {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  paddleCustomerId String   @unique
+  email            String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PaddleTransaction {
+  id                   String    @id @default(cuid())
+  paddleTransactionId  String    @unique
+  userId               String?
+  paddleCustomerId     String?
+  paddleSubscriptionId String?
+  paddlePriceId        String?
+  type                 String // "subscription" | "purchase" | "refund" | "adjustment"
+  status               String // "ready" | "billed" | "paid" | "completed" | "canceled" | "past_due"
+  amount               Decimal   @db.Decimal(10, 2)
+  currency             String    @db.VarChar(3)
+  items                Json? // line items snapshot
+  meta                 Json? // free-form metadata (planSlug, packSlug, billingCycle, etc.)
+  createdAt            DateTime  @default(now())
+  processedAt          DateTime?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([paddleCustomerId])
+  @@index([paddleSubscriptionId])
+}
+
+model WebhookEvent {
+  id            String    @id @default(cuid())
+  paddleEventId String    @unique
+  eventType     String
+  payload       Json
+  signature     String?
+  receivedAt    DateTime  @default(now())
+  processedAt   DateTime?
+  error         String?   @db.Text
+
+  @@index([eventType])
+  @@index([receivedAt])
+  @@index([processedAt])
+}
+
+model ExtraCreditPack {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  name            String
+  credits         Int
+  priceUsd        Decimal  @db.Decimal(10, 2)
+  paddleProductId String?
+  paddlePriceId   String?
+  isActive        Boolean  @default(true)
+  sortOrder       Int      @default(0)
+  validityDays    Int      @default(365)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  purchases ExtraCreditPackPurchase[]
+}
+
+model ExtraCreditPackPurchase {
+  id                  String    @id @default(cuid())
+  userId              String
+  packId              String
+  paddleTransactionId String?   @unique
+  creditsGranted      Int
+  creditsUsed         Int       @default(0)
+  purchasedAt         DateTime  @default(now())
+  expiresAt           DateTime
+  expiredAt           DateTime?
+
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pack          ExtraCreditPack @relation(fields: [packId], references: [id])
+  ledgerEntries CreditLedger[]
+
+  @@index([userId])
+  @@index([userId, expiresAt])
+  @@index([userId, expiredAt])
+}
+
+// ──────────────────────────────────────────────────────
+// Public API keys
+// ──────────────────────────────────────────────────────
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  userId     String
+  name       String
+  keyHash    String    @unique
+  keyPrefix  String
+  scopes     String[]  @default([])
+  lastUsedAt DateTime?
+  expiresAt  DateTime?
+  rateLimit  Int       @default(100)
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  createdBy  String?
+  revokedAt  DateTime?
+  revokedBy  String?
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  apiCallLogs ApiCallLog[]
+
+  @@index([userId])
+  @@index([keyHash])
+  @@index([userId, keyPrefix])
+  @@index([userId, revokedAt])
+}
+
+// ──────────────────────────────────────────────────────
+// AI Engine management (admin-controlled)
+// ──────────────────────────────────────────────────────
+
+/// A user's own AI provider key (bring-your-own-key). Generation runs on the active one.
+model UserAiKey {
+  id           String    @id @default(cuid())
+  userId       String
+  provider     String // openai | anthropic | google | deepseek | openrouter
+  modelId      String
+  label        String?
+  encryptedKey String    @db.Text // AES-256-GCM, see src/lib/crypto.ts
+  keyHint      String // last 4 characters, for display only
+  isActive     Boolean   @default(false) // at most one active key per user
+  lastUsedAt   DateTime?
+  lastError    String?
+  lastErrorAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isActive])
+}
+
+model AiEngine {
+  id                    String   @id @default(cuid())
+  name                  String   @unique
+  provider              String
+  modelId               String
+  encryptedKey          String   @db.Text
+  /// FAZ C1 (2026-05-04) — optional API key pool for round-robin rotation.
+  /// Shape: [{ "encryptedKey": "<aes-gcm hex>", "label": "key#1" }, ...].
+  /// When non-empty, registry.resolveEngine cycles through these keys instead
+  /// of using the singular `encryptedKey` field — mitigates per-key provider
+  /// RPM ceilings under 2K concurrent load. Null/empty → legacy single-key behavior.
+  keyPool               Json?
+  /// FAZ C3 (2026-05-04) — capability tier (S | A | B | C).
+  /// S = top flagship (Opus 4, GPT-5 class), A = strong general (Sonnet 4, GPT-4o,
+  /// Gemini Pro), B = solid mid (Haiku, GPT-4o-mini, Deepseek-chat), C = small/edge.
+  /// Used by tier-policy.ts to gate role assignments — admin cannot assign a
+  /// C-tier engine to SYNTHESIZER (min A required). NULL = "tier not yet
+  /// classified" → guard PASSES (legacy compatibility).
+  capabilityTier        String?
+  /// FAZ C4 (2026-05-04) — last golden-suite qualification result.
+  /// Shape: { score: number 0-100, ranAt: epoch ms, perRole: { ROLE: score },
+  /// notes?: string }. Set by POST /api/admin/engines/[id]/qualify.
+  lastQualificationJson Json?
+  costPerUnit           Decimal  @db.Decimal(10, 6)
+  unitType              String   @default("1k_tokens")
+  isActive              Boolean  @default(true)
+  sortOrder             Int      @default(0)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Model-level capability metadata — pipeline (intent-analyzer, synthesizer)
+  // bu alanları okuyarak prompt'u modele uygun şekillendirir.
+  contextWindow     Int? // toplam input token limiti
+  maxOutputTokens   Int? // max output token üst sınırı
+  preferredFormat   String? // "xml" | "json" | "markdown" | "plain"
+  promptGuidelines  String? @db.Text // Model-spesifik serbest metin rehber
+  supportsVision    Boolean @default(false)
+  supportsReasoning Boolean @default(false)
+
+  primaryMappings    ModalityMapping[]     @relation("PrimaryEngine")
+  fallbackMappings   ModalityMapping[]     @relation("FallbackEngine")
+  questionerMappings ModalityMapping[]     @relation("QuestionerEngine")
+  validatorMappings  ModalityMapping[]     @relation("ValidatorEngine")
+  roleAssignments    AgentRoleAssignment[]
+}
+
+model ModalityMapping {
+  id           String   @id @default(cuid())
+  modality     String   @unique
+  primaryId    String?
+  fallbackId   String?
+  questionerId String?
+  validatorId  String?
+  isEnabled    Boolean  @default(true)
+  updatedAt    DateTime @updatedAt
+
+  primary    AiEngine? @relation("PrimaryEngine", fields: [primaryId], references: [id])
+  fallback   AiEngine? @relation("FallbackEngine", fields: [fallbackId], references: [id])
+  questioner AiEngine? @relation("QuestionerEngine", fields: [questionerId], references: [id])
+  validator  AiEngine? @relation("ValidatorEngine", fields: [validatorId], references: [id])
+}
+
+// ──────────────────────────────────────────────────────
+// FAZ 3 (2026-05-03) — Intent Clarifier Rules
+// Modality-specific clarifying questions that the Intent Analyzer
+// MUST ask when the user's intent doesn't already specify them.
+// Replaces few-shot-emergent behavior with deterministic catalog.
+// ──────────────────────────────────────────────────────
+
+model IntentClarifierRule {
+  id          String   @id @default(cuid())
+  modality    String // 'music' | 'text' | 'image' | 'video' | 'code' | 'audio'
+  domainSlug  String? // null = applies to all domains under this modality
+  priority    Int      @default(0) // higher first
+  questionKey String // canonical key — 'vocals_or_instrumental', 'doc_type', 'aspect_ratio'
+  label       String // user-facing label, e.g. "Vocals or instrumental?"
+  options     Json // [{ "value":"vocals","label":"With vocals" }, ...]
+  triggerWhen Json? // optional condition expression — e.g. { "intentMissing": ["vocals_choice"] }
+  isRequired  Boolean  @default(false) // when true, ALWAYS ask if user didn't answer
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([modality, questionKey])
+  @@index([modality, isActive, priority])
+  @@index([domainSlug])
+}
+
+// ──────────────────────────────────────────────────────
+// Target engines (kullanıcının prompt'u kullanacağı AI)
+// ──────────────────────────────────────────────────────
+
+model TargetEngine {
+  id                    String    @id @default(cuid())
+  slug                  String    @unique
+  name                  String
+  provider              String?
+  modality              String
+  promptStyleHint       String    @db.Text
+  // Bu target tool'un en iyi anladığı çıktı dili.
+  // ISO 639-1 (tr/en/zh…) veya "multilingual" (kullanıcı dilini koru).
+  // null/yok → güvenli default: kullanıcı intent dili.
+  preferredLanguage     String?
+  isActive              Boolean   @default(true)
+  sortOrder             Int       @default(0)
+  iconUrl               String?
+  // V2 picker fields (admin-managed, optional)
+  tier                  String? // 'flagship' | 'standard' | 'legacy' — overrides regex inference in TargetPickerV2
+  capabilities          String[]  @default([]) // e.g. ['multimodal','reasoning','long-context','cheap','open-weights','fast']
+  releasedAt            DateTime? // public release date; falls back to createdAt for NEW badge
+  brandColor            String? // hex color for provider chip; null = generic surface
+  // Authoring criteria (FAZ 1, 2026-05-03) — synthesizer reads these to shape output for this target tool
+  charLimit             Int? // max prompt length this target accepts (e.g. Midjourney 6000, Suno lyrics 3000); null = unbounded
+  preferredFormat       String? // 'plain' | 'json' | 'markdown' | 'structured' | 'parameterized'; null = plain
+  requiresEnglish       Boolean   @default(false) // overrides preferredLanguage when true (e.g. Midjourney works best in English)
+  wantsAssumptions      Boolean   @default(true) // include assumptions block in output
+  negativePromptSupport Boolean   @default(false) // target supports negative prompts (e.g. Stable Diffusion)
+  structuredFieldSpec   Json? // when preferredFormat='structured': required fields and types, e.g. {"genre":"string","bpm":"int"}
+  parameterHints        Json? // CLI-style flags expected, e.g. {"--ar":"16:9","--v":"6"} for Midjourney
+  authoringTipsMd       String?   @db.Text // admin-curated freetext guidelines (markdown)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  prompts   Prompt[]
+  exemplars PromptExemplar[]
+
+  @@index([modality, isActive, sortOrder])
+  @@index([provider, modality])
+  @@index([tier])
+}
+
+// ──────────────────────────────────────────────────────
+// Question templates (admin-managed pool for AI question generator)
+// ──────────────────────────────────────────────────────
+
+model QuestionTemplate {
+  id        String   @id @default(cuid())
+  modality  String
+  category  String?
+  question  String
+  options   Json     @default("[]")
+  weight    Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([modality, isActive, weight])
+}
+
+// ──────────────────────────────────────────────────────
+// Prompt templates (hybrid brain pool)
+// ──────────────────────────────────────────────────────
+
+model PromptTemplate {
+  id          String         @id @default(cuid())
+  category    String
+  categoryId  String?
+  modality    String
+  engine      String?
+  title       String
+  description String?
+  template    String         @db.Text
+  variables   Json           @default("[]")
+  status      TemplateStatus @default(DRAFT)
+  version     String         @default("v1.0") @db.VarChar(20)
+  isActive    Boolean        @default(true)
+  sortOrder   Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  prompts          Prompt[]
+  taxonomyCategory TaxonomyCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([category, modality])
+  @@index([categoryId])
+  @@index([status])
+  @@index([modality, status])
+}
+
+enum TemplateStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+}
+
+// ──────────────────────────────────────────────────────
+// Prompt Library — Embedding Engines
+// ──────────────────────────────────────────────────────
+
+model EmbeddingEngine {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  provider        String // openai | voyageai | cohere | custom
+  modelId         String // text-embedding-3-small, etc.
+  encryptedKey    String   @db.Text
+  dimensions      Int // 1536, 1024, 768 …
+  costPer1MTokens Decimal  @db.Decimal(10, 6)
+  isActive        Boolean  @default(true)
+  isDefault       Boolean  @default(false)
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ──────────────────────────────────────────────────────
+// Prompt Library — Exemplars (quality-verified prompt pool)
+// ──────────────────────────────────────────────────────
+
+enum ExemplarStatus {
+  REVIEW
+  VERIFIED
+  GOLD
+  ARCHIVED
+  REJECTED
+}
+
+model PromptExemplar {
+  id               String                 @id @default(cuid())
+  source           String // "seed_5686" | "admin_upload" | "generated"
+  sourceId         String? // original id/slug in source dataset
+  sourceFile       String? // uploaded filename
+  modality         String // text | image | video | audio | code
+  subCategory      String?
+  intentTags       String[]
+  targetEngineId   String?
+  language         String                 @default("en") // always "en" after translation
+  title            String?
+  prompt           String                 @db.Text
+  expectedOutput   String?                @db.Text
+  promptHash       String                 @unique // SHA-256(prompt) — dedup
+  contentLength    Int
+  embedding        Unsupported("vector")?
+  /// Weighted full-text index over title, tags, sub-category and prompt; kept current by a trigger.
+  searchTsv        Unsupported("tsvector")?
+  embeddingDim     Int?
+  embeddingModel   String?
+  embeddedAt       DateTime?
+  qualityScore     Float?
+  qualityBreakdown Json?
+  status           ExemplarStatus         @default(REVIEW)
+  runCount         Int                    @default(0)
+  successCount     Int                    @default(0)
+  notes            String?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  targetEngine TargetEngine? @relation(fields: [targetEngineId], references: [id], onDelete: SetNull)
+
+  @@index([modality, status])
+  @@index([modality, subCategory, status])
+  @@index([targetEngineId, status])
+  @@index([status, createdAt(sort: Desc)])
+}
+
+// ──────────────────────────────────────────────────────
+// App Settings (key-value store for global config)
+// ──────────────────────────────────────────────────────
+
+model AppSetting {
+  key       String   @id
+  value     String   @db.Text
+  notes     String?
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
+// ──────────────────────────────────────────────────────
+// v4 Prompt Engine — Constitution / RoleBrief / Personas / Provider profiles
+// (migration: 20260501120000_v4_engine_and_training)
+// ──────────────────────────────────────────────────────
+
+enum AgentRoleSlug {
+  INTENT_ANALYZER
+  SYNTHESIZER
+  SAFETY_CHECKER
+  EMBEDDER
+  DISTILLER
+}
+
+enum ResourceType {
+  URL
+  RSS
+  SITEMAP
+  MANUAL_TEXT
+  UPLOAD
+}
+
+enum ResourceRefresh {
+  MANUAL
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum ResourceStatus {
+  ACTIVE
+  PAUSED
+  ERROR
+  ARCHIVED
+}
+
+enum DistillationType {
+  CONSTITUTION_UPDATE
+  PERSONA_UPDATE
+  ANTIPATTERN
+  EXEMPLAR
+}
+
+enum DistillationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  APPLIED
+}
+
+model Constitution {
+  id          String    @id @default(cuid())
+  version     String    @unique
+  content     String    @db.Text
+  changelog   String?
+  isActive    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  createdBy   String?
+  activatedAt DateTime?
+
+  @@index([isActive])
+}
+
+model RoleBrief {
+  id           String        @id @default(cuid())
+  roleSlug     AgentRoleSlug @unique
+  version      String        @default("v1")
+  systemPrompt String        @db.Text
+  outputSchema Json
+  exemplars    Json          @default("[]")
+  isActive     Boolean       @default(true)
+  notes        String?
+  updatedAt    DateTime      @updatedAt
+  updatedBy    String?
+
+  assignment AgentRoleAssignment?
+}
+
+model AgentRoleAssignment {
+  id                String        @id @default(cuid())
+  roleSlug          AgentRoleSlug @unique
+  engineId          String?
+  /// FAZ C2 (2026-05-04) — ordered list of fallback AiEngine.id values.
+  /// Pipeline tries primary engine first; on 5xx/429/timeout/EngineError
+  /// it walks this list in order until one succeeds. Empty array =
+  /// no fallback (legacy behavior; primary failure = pipeline failure).
+  /// Admin sets this from /pr/yonet/agent-roles.
+  fallbackEngineIds String[]      @default([])
+  isActive          Boolean       @default(true)
+  notes             String?
+  updatedAt         DateTime      @updatedAt
+  updatedBy         String?
+
+  role   RoleBrief @relation(fields: [roleSlug], references: [roleSlug], onDelete: Restrict, onUpdate: Cascade)
+  engine AiEngine? @relation(fields: [engineId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+}
+
+model ProviderProfile {
+  id          String   @id @default(cuid())
+  provider    String   @unique
+  styleHint   String   @db.Text
+  hyperparams Json     @default("{}")
+  notes       String?
+  isActive    Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+  updatedBy   String?
+}
+
+model ExpertPersona {
+  id           String   @id @default(cuid())
+  domainSlug   String   @unique
+  name         String
+  body         String   @db.Text
+  jargon       String[]
+  frameworks   String[]
+  antiPatterns String[]
+  isActive     Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  updatedBy    String?
+
+  @@index([isActive, sortOrder])
+}
+
+model AntiPatternRule {
+  id         String   @id @default(cuid())
+  domainSlug String?
+  pattern    String
+  isRegex    Boolean  @default(false)
+  severity   String   @default("warn")
+  rationale  String   @db.Text
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  updatedBy  String?
+
+  @@index([domainSlug, isActive])
+}
+
+model GenerationTrace {
+  id                String   @id @default(cuid())
+  promptId          String?
+  userId            String
+  iterationOf       String?
+  modality          String
+  targetEngineId    String?
+  preprocessJson    Json?
+  intentJson        Json?
+  contextJson       Json?
+  synthesisJson     Json?
+  validationJson    Json?
+  finalJson         Json?
+  /**
+   * Per-layer engine selection trace: { intent, synth, safety } each = { engineId, source: "modality-mapping"|"role-assignment", slot|roleSlug }.
+   */
+  engineSourcesJson Json?
+  totalLatencyMs    Int?
+  totalCost         Decimal? @db.Decimal(10, 6)
+  status            String   @default("ok")
+  errorMessage      String?
+  createdAt         DateTime @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([promptId])
+  @@index([iterationOf])
+  @@index([status, createdAt(sort: Desc)])
+}
+
+model TrainingResource {
+  id                 String          @id @default(cuid())
+  type               ResourceType
+  url                String?
+  title              String
+  description        String?
+  targetPersonaSlugs String[]
+  targetTags         String[]
+  refreshPolicy      ResourceRefresh @default(MANUAL)
+  lastFetchedAt      DateTime?
+  nextFetchAt        DateTime?
+  scrapeConfig       Json            @default("{}")
+  status             ResourceStatus  @default(ACTIVE)
+  errorCount         Int             @default(0)
+  lastError          String?
+  createdBy          String
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  snapshots     TrainingSnapshot[]
+  documents     TrainingDocument[]
+  distillations TrainingDistillation[]
+
+  @@index([status, nextFetchAt])
+  @@index([type, status])
+}
+
+model TrainingSnapshot {
+  id            String   @id @default(cuid())
+  resourceId    String
+  fetchedAt     DateTime @default(now())
+  contentHash   String
+  rawHtml       String?  @db.Text
+  rawText       String   @db.Text
+  contentLength Int
+  diffFromPrev  Json?
+  metadata      Json?
+
+  resource  TrainingResource   @relation(fields: [resourceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  documents TrainingDocument[]
+
+  @@unique([resourceId, contentHash])
+  @@index([resourceId, fetchedAt(sort: Desc)])
+}
+
+model TrainingDocument {
+  id             String                 @id @default(cuid())
+  resourceId     String
+  snapshotId     String
+  chunkIndex     Int
+  chunkText      String                 @db.Text
+  chunkTokens    Int?
+  embedding      Unsupported("vector")?
+  embeddingModel String?
+  embeddingDim   Int?
+  embeddedAt     DateTime?
+  createdAt      DateTime               @default(now())
+
+  resource TrainingResource @relation(fields: [resourceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  snapshot TrainingSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([resourceId])
+  @@index([snapshotId])
+}
+
+model TrainingDistillation {
+  id           String             @id @default(cuid())
+  resourceId   String?
+  snapshotIds  String[]
+  type         DistillationType
+  targetSlug   String?
+  proposalJson Json
+  rationale    String             @db.Text
+  sourceQuotes Json               @default("[]")
+  status       DistillationStatus @default(PENDING)
+  reviewedBy   String?
+  reviewedAt   DateTime?
+  reviewNotes  String?
+  appliedAt    DateTime?
+  appliedToId  String?
+  createdAt    DateTime           @default(now())
+
+  resource TrainingResource? @relation(fields: [resourceId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([type, status])
+}
+
+// ──────────────────────────────────────────────────────
+// Admin Panel Models — Blog, Email, Abuse, Audit, ApiCallLog
+// Added 2026-05-01 (admin-panel-full-functional plan)
+// ──────────────────────────────────────────────────────
+
+model BlogPost {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  title       String
+  excerpt     String?
+  body        String     @db.Text
+  authorId    String
+  status      BlogStatus @default(DRAFT)
+  views       Int        @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([status, publishedAt(sort: Desc)])
+  @@index([authorId])
+}
+
+enum BlogStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  slug      String
+  locale    String   @default("en")
+  subject   String
+  bodyHtml  String   @db.Text
+  bodyText  String?  @db.Text
+  isActive  Boolean  @default(true)
+  sentCount Int      @default(0)
+  updatedBy String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([slug, locale])
+  @@index([slug])
+}
+
+model AbuseReport {
+  id          String       @id @default(cuid())
+  reporterId  String?
+  type        AbuseType
+  severity    Severity     @default(LOW)
+  targetType  String
+  targetId    String
+  description String?      @db.Text
+  status      ReportStatus @default(OPEN)
+  resolvedBy  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  reporter User? @relation("AbuseReporter", fields: [reporterId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([severity])
+  @@index([targetType, targetId])
+}
+
+enum AbuseType {
+  SPAM
+  POLICY_VIOLATION
+  RATE_LIMIT
+  BUG
+  OTHER
+}
+
+enum Severity {
+  LOW
+  MED
+  HIGH
+  CRITICAL
+}
+
+enum ReportStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  DISMISSED
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  targetType String?
+  targetId   String?
+  meta       Json?
+  ip         String?
+  ua         String?
+  createdAt  DateTime @default(now())
+
+  actor User? @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt(sort: Desc)])
+  @@index([action, createdAt(sort: Desc)])
+  @@index([actorId, createdAt(sort: Desc)])
+}
+
+model ApiCallLog {
+  id        String   @id @default(cuid())
+  apiKeyId  String?
+  userId    String?
+  method    String
+  path      String
+  status    Int
+  latencyMs Int
+  ip        String?
+  ua        String?
+  createdAt DateTime @default(now())
+
+  apiKey ApiKey? @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
+  user   User?   @relation("ApiLogUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt(sort: Desc)])
+  @@index([apiKeyId, createdAt(sort: Desc)])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([status, createdAt(sort: Desc)])
+}
+
+// ──────────────────────────────────────────────────────
+// Anti-abuse: signup-time signals for free quota soft-block
+// ──────────────────────────────────────────────────────
+
+model SignupSignal {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  ip          String?
+  userAgent   String?  @db.Text
+  fingerprint String?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([ip])
+  @@index([fingerprint])
+  @@index([createdAt])
+}
+
+// ──────────────────────────────────────────────────────
+// Faz 2 — Analytics & Taxonomy (2026-05-01)
+// ──────────────────────────────────────────────────────
+
+model PageView {
+  id          String   @id @default(cuid())
+  sessionId   String?
+  userId      String?
+  path        String
+  referrer    String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  ip          String?
+  ua          String?
+  durationMs  Int?
+  createdAt   DateTime @default(now())
+
+  user User? @relation("PageViewUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt(sort: Desc)])
+  @@index([path, createdAt(sort: Desc)])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([sessionId, createdAt])
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  sessionId String?
+  userId    String?
+  type      String
+  name      String
+  path      String?
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  user User? @relation("AnalyticsEventUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt(sort: Desc)])
+  @@index([type, name, createdAt(sort: Desc)])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([name, createdAt(sort: Desc)])
+}
+
+model TaxonomyCategory {
+  id          String   @id @default(cuid())
+  modality    String
+  slug        String
+  name        String
+  description String?
+  parentId    String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  parent    TaxonomyCategory?  @relation("TaxonomyParent", fields: [parentId], references: [id], onDelete: SetNull)
+  children  TaxonomyCategory[] @relation("TaxonomyParent")
+  templates PromptTemplate[]
+
+  @@unique([modality, slug])
+  @@index([modality, sortOrder])
+  @@index([parentId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Plan 2026-05-08 step 4 — Brevo bounce/complaint webhook log.
+// /api/webhook/brevo writes one row per inbound event; rawPayload preserves
+// the full Brevo JSON in case Brevo extends the schema in future releases.
+// ─────────────────────────────────────────────────────────────────────────────
+model EmailDeliveryEvent {
+  id         String   @id @default(cuid())
+  email      String
+  event      String
+  // Optional: reason (hard_bounce/soft_bounce/deferred) | tag (unsubscribed)
+  reason     String?
+  brevoId    Int?
+  messageId  String?
+  receivedAt DateTime @default(now())
+  rawPayload Json
+
+  @@index([email, receivedAt(sort: Desc)])
+  @@index([event, receivedAt(sort: Desc)])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Plan 2026-05-08 step 10 — Contact form submissions.
+// /api/contact persists every message; admin reads from /pr/yonet/messages.
+// Notification mail is also sent to support@promtexpress.com on insert.
+// ─────────────────────────────────────────────────────────────────────────────
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  topic     String
+  message   String   @db.Text
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
+  @@index([email, createdAt(sort: Desc)])
+}

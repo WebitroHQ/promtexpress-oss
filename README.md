@@ -83,6 +83,10 @@ Everyone who has shipped a commit or authored a template. Updated automatically 
 </table>
 <!-- contributors:end -->
 
+## The app
+
+The PromtExpress web application itself lives in [`app/`](app/README.md). It is free to use and to self-host: every user brings their own AI provider key. The app is licensed under AGPL-3.0; everything else in this repository is MIT.
+
 ## License
 
-[MIT](LICENSE) © Webitro
+[MIT](LICENSE) © Webitro, except [`app/`](app/), which is [AGPL-3.0](app/LICENSE).

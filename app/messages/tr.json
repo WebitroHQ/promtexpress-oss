@@ -1,0 +1,386 @@
+{
+  "common": {
+    "appName": "promtexpress",
+    "tagline": "Niyetinizi hassas promptlara dönüştürün",
+    "getStarted": "Ücretsiz başla",
+    "login": "Giriş yap",
+    "logout": "Çıkış yap",
+    "dashboard": "Panel",
+    "settings": "Ayarlar",
+    "loading": "Yükleniyor…",
+    "error": "Bir şeyler ters gitti",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "copy": "Kopyala",
+    "copied": "Kopyalandı!",
+    "generate": "Oluştur",
+    "generating": "Oluşturuluyor…",
+    "credits": "{count} kredi"
+  },
+  "metadata": {
+    "description": "Profesyonel prompt mühendisliği aracı. ChatGPT, Claude, Gemini, Midjourney, Sora, DALL-E, Suno ve 50+ AI motoru için niyetinizi nokta atışı promptlara dönüştürün.",
+    "ogDescription": "Profesyonel prompt mühendisliği aracı. 50+ AI motoru için niyetinizi nokta atışı promptlara dönüştürün.",
+    "twitterDescription": "50+ AI motoru için niyetinizi nokta atışı promptlara dönüştürün.",
+    "keyword1": "prompt mühendisliği",
+    "keyword2": "AI prompt aracı"
+  },
+  "nav": {
+    "features": "Özellikler",
+    "pricing": "Fiyatlandırma",
+    "blog": "Blog",
+    "docs": "Dökümanlar",
+    "about": "Hakkında",
+    "contact": "İletişim"
+  },
+  "auth": {
+    "loginTitle": "Tekrar hoş geldiniz",
+    "loginSubtitle": "promtexpress hesabınıza giriş yapın",
+    "continueWithGoogle": "Google ile devam et",
+    "continueWithEmail": "E-posta ile devam et",
+    "emailLabel": "E-posta adresi",
+    "emailPlaceholder": "siz@ornek.com",
+    "checkInbox": "Gelen kutunuzu kontrol edin",
+    "checkInboxDetail": "{email} adresine sihirli bağlantı gönderdik",
+    "noAccount": "Hesabınız yok mu?",
+    "haveAccount": "Hesabınız var mı?",
+    "signUp": "Kayıt ol",
+    "privacyNotice": "Devam ederek Kullanım Koşulları ve Gizlilik Politikamızı kabul etmiş olursunuz.",
+    "verify": {
+      "bannerTitle": "E-postanı doğrula",
+      "bannerDesc": "Üretime başlamak için <strong>{email}</strong> adresine gönderilen linke tıkla. Mail gelmediyse aşağıdan tekrar isteyebilirsin.",
+      "pageTitle": "Gelen kutunu kontrol et",
+      "pageDesc": "<strong>{email}</strong> adresine bir doğrulama linki gönderdik. E-postadaki butona tıklayarak hesabını aktive et.",
+      "checkSpam": "Mail gelmediyse spam/önemsiz klasörünü de kontrol et.",
+      "wrongAddress": "Yanlış adres mi?",
+      "logoutAndRetry": "Çıkış yap ve tekrar gir",
+      "linkExpired": "Bu doğrulama linkinin süresi doldu. Aşağıdan yeni bir mail isteyebilirsiniz.",
+      "linkInvalid": "Doğrulama linki geçersiz. Aşağıdan yeni bir mail isteyebilirsiniz.",
+      "resentSuccess": "Doğrulama maili tekrar gönderildi.",
+      "resentSuccessWithEmail": "Doğrulama maili tekrar gönderildi: {email}",
+      "rateLimited": "Çok sık istek. {sec} sn sonra tekrar deneyin.",
+      "sendFailed": "Mail gönderilemedi. Biraz sonra tekrar deneyin.",
+      "invalidRequest": "Geçersiz istek.",
+      "unexpected": "Beklenmeyen hata.",
+      "sending": "Gönderiliyor…",
+      "resendCooldown": "Tekrar gönder ({sec} sn)",
+      "resendCta": "Mail tekrar gönder",
+      "resendVerificationCta": "Doğrulama mailini tekrar gönder"
+    },
+    "layout": {
+      "joinedBadge": "Bu ay katılanlar",
+      "testimonialQuote": "Ekibime haftada yaklaşık altı saat kazandırdı. İnce ayarı bırakıp üretmeye başladık.",
+      "testimonialName": "Maya Aydın",
+      "testimonialRole": "İçerik Lideri, Verbo",
+      "footerTerms": "Şartlar",
+      "footerPrivacy": "Gizlilik",
+      "footerCopyright": "© 2026 PromtExpress"
+    }
+  },
+  "generator": {
+    "title": "Prompt Oluşturucu",
+    "inputPlaceholder": "Ne istediğinizi yazın. Ne kadar somut olursanız (konu, amaç, stil, referans) sonuç o kadar size özel olur. Eksik kalanları yine soracağız.",
+    "selectEngine": "AI motoru seçin",
+    "selectModality": "Modalite",
+    "modalities": {
+      "text": "Metin",
+      "code": "Kod",
+      "image": "Görsel",
+      "video": "Video",
+      "audio": "Ses"
+    },
+    "resultTitle": "Oluşturulan prompt",
+    "creditsWillUse": "Bu {count} kredi kullanacak",
+    "steps": {
+      "analyzing": "Niyetiniz analiz ediliyor",
+      "analyzingHint": "İstediğiniz konu ve hedef AI inceleniyor",
+      "context": "Hedef AI kuralları çözümleniyor",
+      "contextHint": "Karakter sınırı, format ve örnek promptlar yükleniyor",
+      "synthesizing": "Prompt sentezleniyor",
+      "synthesizingHint": "Profesyonel kalibre prompt yazılıyor — en uzun adım",
+      "validating": "Kalite kontrol",
+      "validatingHint": "Karakter sınırı, format ve girdi koruması doğrulanıyor",
+      "done": "Tamamlandı",
+      "doneHint": "Promptunuz hazır"
+    },
+    "errors": {
+      "generationFailed": "Üretim başarısız",
+      "timeout": "Üretim zaman aşımı (10 dk)",
+      "emailVerifyRequired": "Prompt üretmek için e-posta adresinizi doğrulamanız gerekir.",
+      "systemBusy": "Sistem yoğun, biraz sonra tekrar deneyin.",
+      "engineUnavailable": "AI motoru bu istekte cevap üretemedi. Sistem yöneticisine raporlandı; biraz sonra tekrar deneyin.",
+      "queueUnavailable": "Üretim kuyruğu geçici olarak ulaşılamıyor. Biraz sonra tekrar deneyin.",
+      "rateLimitIp": "Bu IP'den çok fazla istek geldi. 1 dk sonra tekrar deneyin.",
+      "rateLimitFast": "Çok hızlı istek atıyorsunuz, birazdan tekrar deneyin.",
+      "noAiKey": "Prompt üretmek için Ayarlar → AI keys bölümünden kendi yapay zekâ API anahtarını ekle. PromtExpress ücretsizdir.",
+      "insufficientCredits": "Krediniz yetersiz. Lütfen plan yükseltin.",
+      "copyFailed": "Kopyalama başarısız — metni seçip elle kopyalayın",
+      "saveFailed": "Kayıt başarısız",
+      "analyzeFailed": "Analiz başarısız",
+      "intentInvalid": "Girdiğiniz metin işlenemedi: {reason}",
+      "network": "Bağlantı koptu. Üretiminiz devam ediyor olabilir — birkaç saniye sonra sayfayı yenileyin veya tekrar deneyin."
+    },
+    "toast": {
+      "emailVerified": "E-posta adresin doğrulandı.",
+      "copied": "Kopyalandı",
+      "favoriteAdded": "Favorilere eklendi",
+      "favoriteRemoved": "Favorilerden çıkarıldı"
+    },
+    "ui": {
+      "ctaContinueHint": "Devam et'e basınca generator açılır.",
+      "signupHint": "Devam etmek için ücretsiz hesap oluşturun.",
+      "verifyEmailFirst": "Önce e-postanı doğrula",
+      "answerPlaceholder": "Cevabını buraya yaz…",
+      "providerSelect": "Sağlayıcı seç",
+      "modelSelect": "Model seç",
+      "popularThisWeek": "🔥 Bu hafta popüler",
+      "allProviders": "Tüm sağlayıcılar",
+      "letSystemDecide": "Sistem karar versin",
+      "otherProvider": "Diğer",
+      "intentDescription": "Niyet açıklaması",
+      "generating": "Üretim çalışıyor…",
+      "ready": "Promptunuz hazır",
+      "copy": "Kopyala",
+      "copiedExclaim": "Kopyalandı!",
+      "modalityLabel": "Modalite",
+      "targetLabel": "Hedef",
+      "searchPlaceholder": "Ara…",
+      "noResults": "Sonuç yok"
+    },
+    "screen1": {
+      "title": "Yeni prompt",
+      "subtitle": "Ne istediğinizi yazın — prompt mühendisliği işini biz yaparız.",
+      "header": "Hedef AI ve istek",
+      "modalityLabel": "Modalite",
+      "targetLabel": "Hedef AI",
+      "targetHint": "(seçim yapmazsanız sistem karar verir)",
+      "intentLabel": "Ne istiyorsunuz?",
+      "balanceLabel": "Bakiye:",
+      "creditsUnit": "kredi",
+      "continueCta": "Devam et",
+      "analyzingCta": "Analiz ediliyor…"
+    },
+    "screen2": {
+      "quickQuestions": "Birkaç hızlı soru",
+      "didYouMean": "Bunu mu kastettiniz?",
+      "customAnswerCta": "✏️ Kendi cevabımı yazayım",
+      "cancelCta": "İptal",
+      "continueCta": "Devam et",
+      "backCta": "Geri",
+      "skipAllCta": "Hepsini atla — sen karar ver",
+      "noneOfThese": "Hiçbiri değil — açıklamamı düzelteyim",
+      "lowConfidenceTitle": "Dikkat — cevap vermeden devam edersen sonuç konudan sapabilir.",
+      "lowConfidenceBody": "Niyetin kısa ve sistemin sana cevaplanmamış soruları var. Atlarsan üretici jenerik varsayımlar kullanır ve her tahmini varsayım olarak işaretler. Tek bir soruyu cevaplaman bile sonucu sana özel kılar.",
+      "lowConfidenceProceedCta": "Yine de devam et (düşük güven)"
+    },
+    "screen3": {
+      "header": "03",
+      "attentionTitle": "Dikkat",
+      "assumptionsLabel": "Sistem şu varsayımları yaptı:",
+      "copyCta": "Kopyala",
+      "copiedCta": "Kopyalandı!",
+      "savedCta": "Kaydedildi",
+      "favoriteCta": "Favorilere ekle",
+      "newPromptCta": "Yeni prompt"
+    },
+    "sidebar": {
+      "balance": "Bakiye",
+      "remainingCredits": "Kalan kredi",
+      "recentGenerations": "Son üretimler",
+      "noPrompts": "Henüz prompt yok.",
+      "howItWorks": "Nasıl çalışır?",
+      "howItWorksBody": "Sistem sizin için <strong>profesyonel prompt mühendisi</strong> kalitesinde tek bir prompt üretir. Beğenmezseniz feedback verin, yeniden üretilsin."
+    }
+  },
+  "dashboard": {
+    "title": "Panel",
+    "recentPrompts": "Son promptlar",
+    "creditUsage": "Kredi kullanımı",
+    "noPrompts": "Henüz prompt yok. İlkini oluşturun!",
+    "plan": "Mevcut plan",
+    "creditsLeft": "{count} kredi kaldı"
+  },
+  "pricing": {
+    "title": "Sade ve şeffaf fiyatlandırma",
+    "subtitle": "Ücretsiz başlayın, büyüdükçe ölçeklendirin",
+    "monthly": "Aylık",
+    "yearly": "Yıllık",
+    "savePercent": "%{percent} tasarruf",
+    "mostPopular": "En popüler",
+    "getStarted": "Başlayın",
+    "upgrade": "Yükseltin",
+    "currentPlan": "Mevcut plan"
+  },
+  "settings": {
+    "restartTour": {
+      "title": "Tanıtım turunu en baştan başlat",
+      "desc": "Paneli yeniden tanımanı ister misin? Tur sıfırdan başlayacak.",
+      "cta": "Turu yeniden başlat",
+      "saving": "Sıfırlanıyor…",
+      "done": "Tur sıfırlandı, panele dönünce başlayacak."
+    }
+  },
+  "abuse": {
+    "thanks": "Raporunuz alındı. Teşekkürler.",
+    "rateLimited": "Çok fazla rapor gönderdiniz. 24 saat sonra tekrar deneyin.",
+    "failed": "Rapor gönderilemedi. Lütfen tekrar deneyin."
+  },
+  "legal": {
+    "kvkkTabLabel": "KVKK (Türkiye)"
+  },
+  "errors": {
+    "notFound": "Sayfa bulunamadı",
+    "unauthorized": "Bu sayfaya erişmek için giriş yapmanız gerekiyor",
+    "forbidden": "Bu sayfaya erişim izniniz yok",
+    "serverError": "Sunucumuzda bir şeyler ters gitti. Lütfen tekrar deneyin."
+  },
+  "Onboarding": {
+    "welcome": {
+      "title": "PromtExpress'e hoş geldin!",
+      "desc": "Sana paneli 60 saniyede tanıtalım. Sonunda gerçek bir prompt üreteceğiz.",
+      "start": "Tura başla",
+      "skip": "Şimdi değil"
+    },
+    "steps": {
+      "navGenerator": {
+        "title": "Prompt Üretici",
+        "desc": "Yeni prompt üretmeye buradan başlarsın. Şimdi seni bu sayfaya getirdik."
+      },
+      "intentInput": {
+        "title": "Niyetini Yaz",
+        "desc": "Ne üretmek istediğini doğal dilde anlat."
+      },
+      "modelSelect": {
+        "title": "Hedef Model",
+        "desc": "Üretimde kullanılacak AI modelini seç."
+      },
+      "modalitySelect": {
+        "title": "Çıktı Tipi",
+        "desc": "Metin, görsel veya video — hangisi?"
+      },
+      "generateButton": {
+        "title": "Üret",
+        "desc": "Tıkla — gerçek bir üretim yapalım. Mevcut kredinden 1 kullanım düşülür."
+      },
+      "resultPanel": {
+        "title": "Sonuç",
+        "desc": "Kopyala, kaydet, favorile veya paylaş."
+      },
+      "historyFavs": {
+        "title": "Geçmiş & Favoriler",
+        "desc": "Tüm üretimlerin ve favorilerin bu sayfada listelenir."
+      }
+    },
+    "controls": {
+      "next": "İleri",
+      "back": "Geri",
+      "skip": "Atla",
+      "finish": "Bitir",
+      "skipConfirm": "Turu atla? Kalan adımları bir sonraki girişinde tekrar göstereceğiz."
+    },
+    "completed": {
+      "title": "Harika iş!",
+      "desc": "Artık her şeye hazırsın. İyi üretimler!",
+      "cta": "Panele dön"
+    },
+    "settings": {
+      "restartTour": "Tanıtım turunu en baştan başlat",
+      "restartHint": "Paneli yeniden tanımanı ister misin? Tur sıfırdan başlayacak.",
+      "restarted": "Tur sıfırlandı, panele dönünce başlayacak."
+    },
+    "admin": {
+      "title": "Hoşgeldin Kredisi",
+      "desc": "Yeni kayıt olan her kullanıcının hesabına otomatik yüklenecek kredi miktarı.",
+      "amountLabel": "Kredi miktarı",
+      "save": "Kaydet",
+      "saved": "Hoşgeldin kredisi güncellendi.",
+      "currentValue": "Şu anki değer: {amount}"
+    },
+    "help": {
+      "iconLabel": "Yardım"
+    }
+  },
+  "apiKeys": {
+    "pageTitle": "API Anahtarları",
+    "pageDescription": "PromtExpress API'sine programatik erişim",
+    "banner": {
+      "headline": "Anahtarlar yalnızca bir kez gösterilir.",
+      "body": "Anahtarlarını gizli yöneticide sakla. Tehlikede olabileceğini düşündüğün anahtarı yenile."
+    },
+    "list": {
+      "count": "{count, plural, =0 {Anahtar yok} =1 {1 anahtar} other {# anahtar}}",
+      "empty": "Henüz API anahtarı yok. Public API'yı kullanmak için bir tane oluştur.",
+      "showingFirst": "İlk {count} anahtar gösteriliyor.",
+      "headerName": "Ad",
+      "headerPrefix": "Önek",
+      "headerLastUsed": "Son kullanım",
+      "headerCreated": "Oluşturulma",
+      "headerExpires": "Son tarih",
+      "labelLastUsed": "Son kullanım",
+      "labelCreated": "Oluşturulma",
+      "labelExpires": "Son tarih",
+      "never": "Hiç",
+      "justNow": "az önce",
+      "minutesAgo": "{count} dk önce",
+      "hoursAgo": "{count} sa önce",
+      "yesterday": "dün",
+      "daysAgo": "{count} gün önce"
+    },
+    "actions": {
+      "newKey": "Yeni API anahtarı",
+      "rotate": "Yenile",
+      "rotateLabel": "{name} anahtarını yenile",
+      "revoke": "İptal et",
+      "revokeLabel": "{name} anahtarını iptal et"
+    },
+    "create": {
+      "title": "API anahtarı oluştur",
+      "nameLabel": "Anahtar adı",
+      "namePlaceholder": "örn. Production",
+      "scopesLabel": "Kapsamlar",
+      "scopeRead": "Geçmiş ve favorileri oku",
+      "scopeGenerate": "Prompt üretimleri çalıştır",
+      "scopeAdmin": "Hesap ayarlarını yönet",
+      "expirationLabel": "Süre",
+      "expirationNever": "Hiç",
+      "expiration30": "30 gün",
+      "expiration90": "90 gün",
+      "expiration365": "1 yıl",
+      "expirationCustom": "Özel (gün)",
+      "expirationCustomPlaceholder": "örn. 45",
+      "submit": "Anahtar üret",
+      "submitting": "Üretiliyor…",
+      "cancel": "İptal"
+    },
+    "reveal": {
+      "title": "API anahtarını kaydet",
+      "description": "{name} yalnızca bu sefer görünecek. Şimdi kopyala ve gizli yöneticine kaydet.",
+      "confirm": "Kaydettim",
+      "copy": "Kopyala"
+    },
+    "revokeConfirm": {
+      "title": "{name} iptal edilsin mi?",
+      "description": "Bu anahtarı kullanan tüm uygulamalar erişimi anında kaybeder. Geri alınamaz.",
+      "confirm": "Anahtarı iptal et"
+    },
+    "rotateConfirm": {
+      "title": "{name} yenilensin mi?",
+      "description": "Mevcut anahtar anında iptal edilecek ve yenisi üretilecek. Eski anahtarı kullanan uygulamaları hemen güncelle.",
+      "confirm": "Anahtarı yenile"
+    },
+    "toast": {
+      "created": "API anahtarı oluşturuldu",
+      "createFailed": "API anahtarı oluşturulamadı",
+      "revoked": "API anahtarı iptal edildi",
+      "revokeFailed": "API anahtarı iptal edilemedi",
+      "rotated": "API anahtarı yenilendi",
+      "rotateFailed": "API anahtarı yenilenemedi",
+      "copied": "Panoya kopyalandı"
+    },
+    "quickStart": {
+      "title": "Hızlı başlangıç",
+      "sdkNote": "Resmi TypeScript ve Python SDK'ları ile CLI açık kaynak (MIT).",
+      "github": "SDK'ları GitHub'da incele →"
+    }
+  }
+}
