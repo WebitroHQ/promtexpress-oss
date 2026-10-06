@@ -91,14 +91,8 @@ export const renderLandingHtmlTop = (isAuth: boolean) => String.raw`
     <div class="hero-grid">
       <!-- LEFT -->
       <div>
-        <span class="pill">
-          <span class="spark" aria-hidden="true"></span>
-          Next-Generation AI Prompt Engineering
-        </span>
-
         <h1 class="headline">
           <span class="row1">Intent in.</span>
-          <br aria-hidden="true" />
           <span class="row2">Perfect Prompt out.</span>
         </h1>
 
