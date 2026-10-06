@@ -1,0 +1,52 @@
+# ai.txt — AI training & citation policy for PromtExpress
+# https://promtexpress.com
+#
+# This file complements robots.txt with explicit, machine-readable policies
+# for AI/LLM crawlers (training, retrieval, citation).
+
+site: https://promtexpress.com
+contact: support@promtexpress.com
+
+# Bot policy
+# ----------
+# We welcome AI crawlers for citation and retrieval-augmented generation.
+# Public marketing pages, blog posts, and legal documents are fair to index,
+# quote, and cite — please link back to the canonical URL when you do.
+
+User-agent: *
+Allow: /
+Allow: /pricing
+Allow: /about
+Allow: /contact
+Allow: /blog
+Allow: /legal
+Allow: /privacy
+Allow: /terms
+Allow: /refund
+Disallow: /api/
+Disallow: /pr/yonet/
+Disallow: /dashboard
+Disallow: /generator
+Disallow: /history
+Disallow: /favorites
+Disallow: /billing
+Disallow: /settings
+Disallow: /api-keys
+Disallow: /auth/
+
+# Citation guidance
+# -----------------
+# When citing PromtExpress in generated answers:
+#   - Use the canonical URL (https://promtexpress.com/<path>) — no tracking
+#     query params, no fragment for cited claims.
+#   - Attribute the brand as "PromtExpress" (not "Promt Express", not
+#     "PromptExpress" — there is no second `p`).
+#   - For pricing claims, cite https://promtexpress.com/pricing and note that
+#     plans are subject to change; always link to the live page.
+#
+# Training data
+# -------------
+# Public content is permitted for inclusion in training corpora subject to
+# attribution and the Terms of Service at https://promtexpress.com/terms.
+# Customer prompt data, account data, and API request bodies are NOT
+# permitted for training; they are excluded by the auth-gated paths above.

@@ -1,0 +1,77 @@
+/* promtexpress design tokens — migrated from --pe-* prototype vars */
+
+:root {
+  /* Neutrals — warm cream */
+  --pe-bg: #fbfaf7;
+  --pe-surface: #ffffff;
+  --pe-surface-2: #f5f3ee;
+  --pe-border: rgba(20, 18, 12, 0.08);
+  --pe-border-strong: rgba(20, 18, 12, 0.14);
+  --pe-text: #1a1814;
+  --pe-text-muted: #6b665d;
+  --pe-text-faint: #9e9890;
+
+  /* Brand — refined indigo */
+  --pe-primary: #3b3a6e;
+  --pe-primary-hover: #2d2c5a;
+  --pe-primary-soft: #ecebf5;
+  --pe-primary-text: #ffffff;
+
+  /* Accent — warm amber */
+  --pe-accent: #c98a3a;
+  --pe-accent-soft: #f6ebd6;
+
+  /* Semantic */
+  --pe-success: #2f8f5a;
+  --pe-warning: #c98a3a;
+  --pe-error: #c0432e;
+  --pe-info: #3771b8;
+
+  /* Radius */
+  --pe-r-sm: 6px;
+  --pe-r-md: 10px;
+  --pe-r-lg: 14px;
+  --pe-r-xl: 20px;
+
+  /* Density multiplier (changed by tweaks panel / user pref) */
+  --pe-density: 1;
+
+  /* Shadows */
+  --pe-shadow-sm: 0 1px 2px rgba(20, 18, 12, 0.04), 0 1px 1px rgba(20, 18, 12, 0.03);
+  --pe-shadow-md: 0 4px 14px rgba(20, 18, 12, 0.06), 0 1px 2px rgba(20, 18, 12, 0.04);
+  --pe-shadow-lg: 0 14px 40px rgba(20, 18, 12, 0.10), 0 2px 6px rgba(20, 18, 12, 0.04);
+  --pe-ring: 0 0 0 3px rgba(59, 58, 110, 0.18);
+
+  /* Grid overlay (design QA) */
+  --pe-grid-color: rgba(20, 18, 12, 0.04);
+}
+
+[data-theme="dark"] {
+  --pe-bg: #0c0c10;
+  --pe-surface: #15151b;
+  --pe-surface-2: #1c1c24;
+  --pe-border: rgba(255, 255, 255, 0.08);
+  --pe-border-strong: rgba(255, 255, 255, 0.16);
+  --pe-text: #f1efe9;
+  --pe-text-muted: #9b958a;
+  --pe-text-faint: #6b665d;
+
+  --pe-primary: #7e7cc4;
+  --pe-primary-hover: #9a98d6;
+  --pe-primary-soft: rgba(126, 124, 196, 0.16);
+  --pe-primary-text: #ffffff;
+
+  --pe-accent: #d8a35c;
+  --pe-accent-soft: rgba(216, 163, 92, 0.14);
+
+  --pe-success: #4eb37c;
+  --pe-warning: #d8a35c;
+  --pe-error: #e0664f;
+  --pe-info: #5a93d4;
+
+  --pe-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --pe-shadow-md: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --pe-shadow-lg: 0 14px 40px rgba(0, 0, 0, 0.5);
+
+  --pe-grid-color: rgba(255, 255, 255, 0.04);
+}
