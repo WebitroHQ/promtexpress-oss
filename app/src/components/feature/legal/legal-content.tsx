@@ -78,7 +78,7 @@ export const TERMS_SECTIONS: Section[] = [
             harassment, or hatred against protected groups;
           </li>
           <li>
-            attempt to circumvent rate limits, security controls, billing, or our
+            attempt to circumvent rate limits, security controls, or our
             authentication mechanisms;
           </li>
           <li>resell, sublicense, or rebrand the Service without written consent;</li>
@@ -97,54 +97,42 @@ export const TERMS_SECTIONS: Section[] = [
   },
   {
     id: "payment",
-    title: "5. Payment, billing, and Merchant of Record",
+    title: "5. Price",
     body: (
       <>
         <p>
-          Payments are processed by{" "}
-          <strong>Paddle.com Market Limited</strong> (&quot;Paddle&quot;), our
-          authorised reseller and Merchant of Record. Paddle is responsible for
-          collecting payment, handling sales tax/VAT, issuing invoices, and operating
-          the checkout flow on our behalf. By purchasing, you also agree to{" "}
-          <a
-            href="https://www.paddle.com/legal/checkout-buyer-terms"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline"
-          >
-            Paddle&apos;s Buyer Terms
-          </a>
-          .
+          PromtExpress is free. There are no plans, subscriptions, or credits, and we
+          do not take payments.
         </p>
         <p>
-          All prices on the Service are stated in U.S. dollars (USD). Recurring
-          subscriptions renew automatically until cancelled. Credit allocations from a
-          plan are valid only within the active billing period unless otherwise
-          stated; one-time credit packs follow the terms shown at purchase and on the{" "}
-          <Link href="/refund" className="text-primary hover:underline">
-            Refund Policy
-          </Link>{" "}
-          page.
+          Generation runs on an AI provider API key that you add to your account. Any
+          usage charges are billed to you by that provider under your own agreement
+          with them; we do not receive any part of them.
+        </p>
+        <p>
+          Purchases made before October 2026, when the Service still offered paid
+          credit packs, were processed by Paddle.com Market Limited as Merchant of
+          Record. For any question about such a purchase, contact us at the address
+          in the Contact section.
         </p>
       </>
     ),
   },
   {
-    id: "cancellation-refund",
-    title: "6. Cancellation and refunds",
+    id: "ai-keys",
+    title: "6. Your AI provider keys",
     body: (
       <>
         <p>
-          You may cancel a subscription at any time from your billing area; you keep
-          access to paid features until the end of the current period. Cancellation
-          does not generate an automatic refund.
+          To generate prompts you add an API key from a supported AI provider. You
+          are responsible for that key, for your account with the provider, for the
+          charges it incurs, and for complying with the provider&apos;s terms.
         </p>
         <p>
-          Refunds are governed by our{" "}
-          <Link href="/refund" className="text-primary hover:underline">
-            Refund Policy
-          </Link>
-          . Approved refunds are issued by Paddle to the original payment method.
+          We store your keys encrypted and use them only to run the generations you
+          request. Keys are never displayed again after you save them. You can remove
+          a key at any time in Settings, and your keys are deleted when you delete
+          your account.
         </p>
       </>
     ),
@@ -175,12 +163,11 @@ export const TERMS_SECTIONS: Section[] = [
     title: "8. Third-party AI providers",
     body: (
       <p>
-        The Service relies on third-party AI providers (e.g. Anthropic, OpenAI,
-        Google, Deepseek) to perform language understanding and generation tasks
-        internally. These providers act as processors. The administrator chooses the
-        active engines via the admin panel; users do not select underlying models
-        directly. We do not warrant the availability or output of any third-party
-        model.
+        The Service sends the text you submit to the AI provider whose API key is
+        active on your account (for example OpenAI, Anthropic, Google, DeepSeek, or
+        OpenRouter) in order to analyse your intent and write the prompt. That
+        provider processes the request under your own account and agreement with
+        them. We do not warrant the availability or output of any third-party model.
       </p>
     ),
   },
@@ -234,9 +221,9 @@ export const TERMS_SECTIONS: Section[] = [
     title: "12. Changes to the Service",
     body: (
       <p>
-        We may add, change, or remove features, plans, or pricing at any time. For
-        material changes that adversely affect a paid plan, we will give reasonable
-        notice and, where required, allow a pro-rated refund of unused time.
+        We may add, change, or remove features at any time. If we ever introduce
+        paid features, we will announce it in advance and nothing you already use
+        for free will be charged without your explicit agreement.
       </p>
     ),
   },
@@ -315,12 +302,20 @@ export const PRIVACY_SECTIONS: Section[] = [
           </li>
           <li>
             <strong>Usage data:</strong> prompts you submit, generated prompt outputs,
-            generation timestamps, credit ledger entries, audit logs.
+            generation timestamps, audit logs.
           </li>
           <li>
-            <strong>Billing data:</strong> Paddle customer ID, subscription state,
-            transaction IDs, plan slug. We do <em>not</em> store full card numbers;
-            payment data is held by Paddle.
+            <strong>AI provider keys:</strong> the API keys you add in Settings,
+            stored encrypted (AES-256-GCM) together with the provider name, the model
+            you chose, and the last four characters for display.
+          </li>
+          <li>
+            <strong>Feedback:</strong> messages you send from the Feedback page.
+          </li>
+          <li>
+            <strong>Billing data (purchases before October 2026 only):</strong>{" "}
+            Paddle customer ID and transaction IDs. We never stored card numbers;
+            payment data is held by Paddle. The Service no longer takes payments.
           </li>
           <li>
             <strong>Technical data:</strong> IP address, browser/user-agent, device
@@ -344,8 +339,8 @@ export const PRIVACY_SECTIONS: Section[] = [
         <ul className="list-disc pl-6 mt-2 space-y-1">
           <li>
             <strong>Performance of the contract</strong> — to provide the Service,
-            authenticate users, deliver generated prompts, manage credits and
-            subscriptions.
+            authenticate users, store your AI provider keys, and deliver generated
+            prompts.
           </li>
           <li>
             <strong>Legitimate interest</strong> — to detect abuse, prevent fraud,
@@ -374,8 +369,9 @@ export const PRIVACY_SECTIONS: Section[] = [
         </p>
         <ul className="list-disc pl-6 mt-2 space-y-1">
           <li>
-            <strong>Paddle.com Market Limited</strong> — payment processing, Merchant
-            of Record (UK).
+            <strong>Paddle.com Market Limited</strong> — Merchant of Record for
+            purchases made before October 2026 only (UK). No data is sent to Paddle
+            for current use of the Service.
           </li>
           <li>
             <strong>Brevo</strong> — transactional email delivery (France/EU).
@@ -389,8 +385,10 @@ export const PRIVACY_SECTIONS: Section[] = [
             (global).
           </li>
           <li>
-            <strong>AI providers</strong> — Anthropic, OpenAI, Google AI, Deepseek,
-            and similar — to process the prompts you submit.
+            <strong>The AI provider you choose</strong> — OpenAI, Anthropic, Google,
+            DeepSeek, or OpenRouter, whichever API key is active on your account —
+            receives the prompts you submit, under your own account with that
+            provider.
           </li>
           <li>
             <strong>Hosting</strong> — server is operated in a managed colocation
@@ -529,12 +527,6 @@ export const COOKIE_SECTIONS: Section[] = [
             cookie-light traffic measurement (no fingerprinting). May be disabled
             from your account.
           </li>
-          <li>
-            <strong>Payment</strong> — when the checkout overlay is open, Paddle and
-            its payment processor may set their own session cookies on their domains
-            in order to process the transaction. These are governed by Paddle&apos;s
-            policies.
-          </li>
         </ul>
         <p className="mt-3">
           We do not use advertising cookies, tracking pixels, or third-party social
@@ -549,7 +541,7 @@ export const COOKIE_SECTIONS: Section[] = [
     body: (
       <p>
         You can configure your browser to block or warn you about cookies. Blocking
-        strictly necessary cookies will sign you out and prevent purchase. Browser
+        strictly necessary cookies will sign you out. Browser
         documentation: Chrome, Firefox, Safari, and Edge each provide settings under
         Privacy &amp; Security.
       </p>
@@ -639,7 +631,7 @@ export const KVKK_SECTIONS: Section[] = [
         <p>Your personal data is processed for the following purposes:</p>
         <ul className="list-disc pl-6 mt-2 space-y-1">
           <li>account creation, identity verification, and account management;</li>
-          <li>service delivery, credit management, and subscription billing;</li>
+          <li>service delivery, including storing the AI provider keys you add;</li>
           <li>responding to support requests and communication;</li>
           <li>security, abuse prevention, and compliance with legal obligations.</li>
         </ul>
@@ -647,7 +639,7 @@ export const KVKK_SECTIONS: Section[] = [
           <p>Kişisel verileriniz aşağıdaki amaçlarla işlenmektedir:</p>
           <ul className="list-disc pl-6 mt-2 space-y-1">
             <li>üyelik oluşturma, kimlik doğrulama ve hesap yönetimi;</li>
-            <li>hizmetin sunulması, kredi yönetimi ve abonelik faturalandırması;</li>
+            <li>eklediğiniz yapay zekâ sağlayıcı anahtarlarının saklanması dahil hizmetin sunulması;</li>
             <li>destek talebi yanıtlama ve iletişim;</li>
             <li>güvenlik, kötüye kullanımı önleme ve hukuki yükümlülüklere uyum.</li>
           </ul>
@@ -682,17 +674,20 @@ export const KVKK_SECTIONS: Section[] = [
       <>
         <p>
           To run the service, your personal data is transferred to the following overseas
-          processors (KVKK Art. 9): Paddle (payments — UK), Brevo (email — EU), Google
-          (OAuth — US/EU), Cloudflare (CDN/Analytics — global), AI providers (Anthropic,
-          OpenAI, Google AI, Deepseek, etc.). Transfers comply with KVKK&apos;s safe-country /
+          processors (KVKK Art. 9): Brevo (email — EU), Google (OAuth — US/EU), Cloudflare
+          (CDN/Analytics — global), and the AI provider whose API key you add (OpenAI,
+          Anthropic, Google, DeepSeek, or OpenRouter). Paddle (UK) holds data only for
+          purchases made before October 2026. Transfers comply with KVKK&apos;s safe-country /
           standard contractual clauses / explicit consent provisions.
         </p>
         <KvkkOriginal>
           <p>
             Hizmetin yürütülmesi için kişisel verileriniz aşağıdaki yurt dışı işleyenlere
-            aktarılır (KVKK m.9): Paddle (ödeme — Birleşik Krallık), Brevo (e-posta — AB),
-            Google (OAuth — ABD/AB), Cloudflare (CDN/Analytics — küresel), AI
-            sağlayıcıları (Anthropic, OpenAI, Google AI, Deepseek vb.). Aktarımlar
+            aktarılır (KVKK m.9): Brevo (e-posta — AB), Google (OAuth — ABD/AB), Cloudflare
+            (CDN/Analytics — küresel) ve API anahtarını eklediğiniz yapay zekâ
+            sağlayıcısı (OpenAI, Anthropic, Google, DeepSeek veya OpenRouter). Paddle
+            (Birleşik Krallık) yalnızca Ekim 2026 öncesinde yapılan satın alımlara ait
+            verileri tutar. Aktarımlar
             KVKK&apos;nın güvenli ülke / standart sözleşme / açık rıza hükümlerine
             uygun olarak gerçekleştirilir.
           </p>

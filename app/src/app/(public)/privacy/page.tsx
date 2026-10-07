@@ -26,7 +26,7 @@ export default function PrivacyPage() {
         <LegalSectionRenderer
           sections={PRIVACY_SECTIONS}
           title="Privacy Policy"
-          lastUpdated="May 6, 2026"
+          lastUpdated="October 7, 2026"
         />
       </section>
     </div>

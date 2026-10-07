@@ -12,7 +12,7 @@ const _legalMeta = buildMetadata({
   pathname: "/legal",
   title: "Legal",
   description:
-    "Legal information for PromtExpress — Terms of Service, Privacy Policy, Refund Policy, and Cookie Policy.",
+    "Legal information for PromtExpress — Terms of Service, Privacy Policy, and Cookie Policy.",
 });
 
 // SEM-1: /legal is a near-verbatim duplicate of /terms. Consolidate indexing to
@@ -35,7 +35,7 @@ export default function LegalPage() {
       <TopNav />
       <section className="pe-section pt-12">
         <h1 className="text-[36px] font-semibold tracking-[-0.025em] mb-1">Legal</h1>
-        <p className="text-sm text-text-faint mb-6">Last updated: April 21, 2026</p>
+        <p className="text-sm text-text-faint mb-6">Last updated: October 7, 2026</p>
         <Suspense fallback={null}>
           <LegalTabs />
         </Suspense>

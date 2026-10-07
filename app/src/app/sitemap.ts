@@ -43,7 +43,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // canonicalized to /terms, so it must not be submitted as a separate indexable URL.
     { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
     { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
-    { path: "/refund", changeFrequency: "yearly", priority: 0.3 },
     // NOTE: /auth/login and /auth/signup are intentionally NOT listed here.
     // robots.ts disallows /auth/ for all bots and (auth)/layout.tsx sets
     // noindex,nofollow — listing them produced "Submitted URL blocked by

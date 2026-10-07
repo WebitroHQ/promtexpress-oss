@@ -26,7 +26,7 @@ export default function TermsPage() {
         <LegalSectionRenderer
           sections={TERMS_SECTIONS}
           title="Terms of Service"
-          lastUpdated="May 6, 2026"
+          lastUpdated="October 7, 2026"
         />
       </section>
     </div>

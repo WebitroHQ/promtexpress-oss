@@ -9,7 +9,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { PageViewTracker } from "@/components/feature/analytics/page-view-tracker";
 import { GoogleAdsTag } from "@/components/feature/analytics/google-ads-tag";
 import { ConsentModeUpdater } from "@/components/feature/analytics/consent-mode-updater";
-import { PaddleProvider } from "@/components/providers/paddle-provider";
 import { ConsentGate } from "@/components/feature/legal/consent-gate";
 import { CookieConsentBanner } from "@/components/feature/legal/cookie-consent-banner";
 import { SEO_BASE_URL, buildCanonical, buildHreflangMap } from "@/lib/seo/hreflang";
@@ -174,7 +173,6 @@ export default async function RootLayout({
             so those TLS connections were never used. */}
         <link rel="preconnect" href="https://static.cloudflareinsights.com" />
         <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
-        <link rel="dns-prefetch" href="https://cdn.paddle.com" />
       </head>
       <body className="min-h-full flex flex-col bg-bg text-text">
         {/* Plan §7.5 — skip-to-content link (a11y → SEO). */}
@@ -194,7 +192,6 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <PaddleProvider>
               {children}
               <Toaster />
               {/* Plan 2026-05-08 step 5 — analytics tracker is gated by user consent. */}
@@ -213,7 +210,6 @@ export default async function RootLayout({
               <GoogleAdsTag />
               <ConsentModeUpdater />
               <CookieConsentBanner />
-            </PaddleProvider>
           </ThemeProvider>
         </SessionProvider>
         </NextIntlClientProvider>

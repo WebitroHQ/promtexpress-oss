@@ -26,6 +26,7 @@ const RETIRED_COMMERCIAL_PAGES = [
   { source: "/pricing", destination: "/", permanent: false },
   { source: "/billing", destination: "/settings#ai-keys", permanent: false },
   { source: "/checkout-success", destination: "/dashboard", permanent: false },
+  { source: "/refund", destination: "/terms", permanent: false },
   { source: "/pr/yonet/live", destination: "/pr/yonet", permanent: false },
   { source: "/pr/yonet/billing/:path*", destination: "/pr/yonet", permanent: false },
   { source: "/pr/yonet/plans", destination: "/pr/yonet", permanent: false },

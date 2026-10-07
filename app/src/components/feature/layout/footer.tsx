@@ -21,7 +21,6 @@ const COMPANY_LINKS = [
 const LEGAL_LINKS = [
   { label: "Terms", href: "/terms" },
   { label: "Privacy", href: "/privacy" },
-  { label: "Refund", href: "/refund" },
   { label: "Legal hub", href: "/legal" },
 ];
 
