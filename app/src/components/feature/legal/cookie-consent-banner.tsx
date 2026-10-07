@@ -14,7 +14,7 @@
  *     client tick (until useEffect fires). Plan rule 4 — no hydration arıza.
  *
  * Strings: English only (plan rule 1). i18n keys are scoped to
- * `cookieConsent.*`; en.json is canonical, tr.json provides translation.
+ * `cookieConsent.*`; en.json is canonical.
  */
 
 import * as React from "react";

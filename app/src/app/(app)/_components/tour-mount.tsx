@@ -13,7 +13,7 @@ interface Props {
   initialStepIndex: number;
   /** User-selected locale (from User.locale, narrowed to supported set). Tour follows site locale. */
   userLocale: SupportedLocale;
-  messages: { tr: Record<string, unknown>; en: Record<string, unknown> };
+  messages: { en: Record<string, unknown> };
   children: React.ReactNode;
 }
 

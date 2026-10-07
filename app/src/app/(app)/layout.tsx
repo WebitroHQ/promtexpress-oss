@@ -5,7 +5,6 @@ import { getLocale } from "next-intl/server";
 import { TourMount } from "./_components/tour-mount";
 import { ConsentUpdateModal } from "@/components/feature/legal/consent-update-modal";
 import enMessages from "../../../messages/en.json";
-import trMessages from "../../../messages/tr.json";
 import type { SupportedLocale } from "@/components/onboarding-tour/use-browser-locale";
 
 // Authenticated app surfaces are not for search engines. Child pages may set
@@ -15,10 +14,10 @@ export const metadata: Metadata = {
 };
 
 // NextIntlClientProvider is now hosted by the ROOT layout (src/app/layout.tsx)
-// so this layout no longer wraps children with one. We still pre-load both
-// locale message bundles for the onboarding tour because TourProvider has its
-// own messages contract independent of next-intl.
-const TOUR_MESSAGES = { tr: trMessages, en: enMessages } as const;
+// so this layout no longer wraps children with one. We still pre-load the
+// English message bundle for the onboarding tour because TourProvider has its
+// own messages contract independent of next-intl. English only since 2026-10.
+const TOUR_MESSAGES = { en: enMessages } as const;
 
 export default async function AppGroupLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
