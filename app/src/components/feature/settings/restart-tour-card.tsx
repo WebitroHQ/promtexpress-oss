@@ -5,25 +5,15 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 const COPY = {
-  tr: {
-    title: "Tanıtım turunu en baştan başlat",
-    desc: "Paneli yeniden tanımanı ister misin? Tur sıfırdan başlayacak.",
-    cta: "Turu yeniden başlat",
-    saving: "Sıfırlanıyor…",
-    done: "Tur sıfırlandı, panele dönünce başlayacak.",
-  },
-  en: {
-    title: "Restart the onboarding tour",
-    desc: "Want to learn the panel again? The tour will restart from scratch.",
-    cta: "Restart tour",
-    saving: "Resetting…",
-    done: "Tour reset — it will start when you return to the dashboard.",
-  },
+  title: "Restart the onboarding tour",
+  desc: "Want to learn the panel again? The tour will restart from scratch.",
+  cta: "Restart tour",
+  saving: "Resetting…",
+  done: "Tour reset — it will start when you return to the dashboard.",
 } as const;
 
-export function RestartTourCard({ locale }: { locale: string }) {
-  const lang: keyof typeof COPY = locale === "tr" ? "tr" : "en";
-  const t = COPY[lang];
+export function RestartTourCard() {
+  const t = COPY;
   const router = useRouter();
   const [busy, setBusy] = React.useState(false);
   const [msg, setMsg] = React.useState<string | null>(null);
