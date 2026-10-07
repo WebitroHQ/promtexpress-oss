@@ -171,6 +171,8 @@ export default async function RootLayout({
         {/* Plan §7.2 — preconnect to first-paint dependencies. Google Fonts
             preconnects removed (MOB-3): fonts are self-hosted via next/font,
             so those TLS connections were never used. */}
+        {/* Google AdSense site ownership. */}
+        <meta name="google-adsense-account" content="ca-pub-9636449226387562" />
         <link rel="preconnect" href="https://static.cloudflareinsights.com" />
         <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
       </head>
