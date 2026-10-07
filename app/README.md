@@ -53,10 +53,9 @@ node scripts/worker.bundled.cjs
 
 This code was opened up from a private product in October 2026. Be aware of the following:
 
-- **Migrations are incomplete.** `prisma/migrations` holds only the most recent migrations, not the full history, so `pnpm db:migrate:deploy` on an empty database will not create every table. Until a baseline migration is added, create the schema with `pnpm prisma db push` and then run the SQL in `prisma/migrations/20261006130000_exemplar_lexical_search/migration.sql` once (it adds the search trigger, which `db push` does not; the file is safe to re-run).
+- **Migrations are incomplete** ([#24](https://github.com/WebitroHQ/promtexpress-oss/issues/24))**.** `prisma/migrations` holds only the most recent migrations, not the full history, so `pnpm db:migrate:deploy` on an empty database will not create every table. Until a baseline migration is added, create the schema with `pnpm prisma db push` and then run the SQL in `prisma/migrations/20261006130000_exemplar_lexical_search/migration.sql` once (it adds the search trigger, which `db push` does not; the file is safe to re-run).
 - **The prompt library is not included.** The examples used on promtexpress.com are not in this repository. A fresh install generates without few-shot examples until you add your own in the admin panel (`/pr/yonet/library`).
-- **Billing code is still present but unused.** Paddle webhooks, plans and the credit ledger remain in the schema and admin panel. Generation costs zero credits.
-- **Type checking is not clean.** `next.config.ts` sets `typescript.ignoreBuildErrors`, mostly because of stale test files.
-- **End-to-end generation with a user key has not been verified in production yet.**
+- **Billing code is still present but unused** ([#27](https://github.com/WebitroHQ/promtexpress-oss/issues/27))**.** Paddle webhooks, plans and the credit ledger remain in the schema and the code. Generation costs zero credits.
+- **Type checking is not clean** ([#23](https://github.com/WebitroHQ/promtexpress-oss/issues/23))**.** `next.config.ts` sets `typescript.ignoreBuildErrors`, mostly because of stale test files.
 
-Help with any of these is welcome. See [CONTRIBUTING.md](../CONTRIBUTING.md).
+Help with any of these is welcome. Smaller starting points are labelled [`app` + `good first issue`](https://github.com/WebitroHQ/promtexpress-oss/issues?q=is%3Aissue+is%3Aopen+label%3Aapp). See [CONTRIBUTING.md](../CONTRIBUTING.md).
